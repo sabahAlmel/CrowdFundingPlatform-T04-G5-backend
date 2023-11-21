@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/config.js";
+import sequelize from "../config/dbConnection.js";
 
 const User = sequelize.define("User", {
   firstName: {
@@ -35,7 +35,6 @@ const User = sequelize.define("User", {
 //   userName: "2hi",
 //   password: "hello",
 //   role: "admin",
-//   profileId: "profile",
 //   image: "image12",
 // }).then(() => {
 //   console.log("fist element");
