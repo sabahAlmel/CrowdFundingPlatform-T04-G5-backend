@@ -1,6 +1,6 @@
 import express from "express";
 import "dotenv/config";
-import sequelize from "./config/config.js";
+import sequelize from "./config/dbConnection.js";
 import cors from "cors";
 
 import { userRouter } from "./routes/user.routes.js";
