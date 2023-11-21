@@ -25,8 +25,7 @@ function addNewUser(req, res) {
     !user.lastName ||
     !user.userName ||
     !user.password ||
-    !user.role ||
-    !user.profileId
+    !user.role
   ) {
     if (image) {
       removeImage(image);

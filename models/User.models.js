@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/config.js";
+import sequelize from "../config/config.js";
 
 const User = sequelize.define("User", {
   firstName: {
@@ -23,14 +23,23 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  profileId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   image: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
+
+// User.create({
+//   firstName: "hi",
+//   lastName: "hii2",
+//   userName: "2hi",
+//   password: "hello",
+//   role: "admin",
+//   profileId: "profile",
+//   image: "image12",
+// }).then(() => {
+//   console.log("fist element");
+// });
+// User.sync();
 
 export default User;
