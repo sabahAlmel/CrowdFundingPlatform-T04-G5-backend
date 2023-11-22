@@ -1,4 +1,5 @@
-import Donor from "../models/DonorModel.js";
+import Donations from "../models/donations.js";
+import Donor from "../models/donor.js";
 
 export async function addDonor(req, res) {
   const { balance } = req.body;
@@ -31,7 +32,7 @@ export async function editDonor(req, res) {
 }
 export async function readDonors(req, res){
     try {
-        const response = await Donor.findAll()
+        const response = await Donor.findAll({include: Donations})
         res.json({data: response})
     } catch (error) {
         

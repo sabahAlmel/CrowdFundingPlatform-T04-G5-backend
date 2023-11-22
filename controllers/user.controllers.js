@@ -1,4 +1,4 @@
-import User from "../models/User.models.js";
+// import User from "../models/user.js";
 import fs from "fs";
 
 function removeImage(image) {
