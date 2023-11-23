@@ -1,3 +1,4 @@
+import User from "../models/User.models.js";
 import Campaign from "../models/campaignModel.js";
 import Donations from "../models/donations.js";
 import Donor from "../models/donor.js";
@@ -33,7 +34,7 @@ export async function editDonor(req, res) {
 }
 export async function readDonors(req, res){
     try {
-        const response = await Donor.findAll({include: Campaign})
+        const response = await Donor.findAll({include: [Campaign, User],})
         res.json({data: response})
     } catch (error) {
         console.log(error)

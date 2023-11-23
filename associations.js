@@ -10,8 +10,6 @@ User.belongsTo(Creator);
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
-Donor.hasOne(User);
-User.belongsTo(Donor);
-
-
+Donor.hasOne(User, {foreignKey: 'DonorId'});
+User.belongsTo(Donor, {foreignKey:'DonorId'});
 

@@ -14,7 +14,7 @@ function removeImage(image) {
 }
 
 async function getAllUsers(req, res) {
-  let getAll = await User.findAll({include: 'DonorId'});
+  let getAll = await User.findAll({ include: "DonorId" });
   return res.status(200).json(getAll);
 }
 
@@ -37,25 +37,15 @@ async function addNewUser(req, res) {
   } else {
     user.image = image;
 
-    // let newUser = User.create({ ...user })
-    //   .then((result) => {
-    //     console.log(result);
-    //     return res.status(200).json(result);
-    //   })
-    //   .catch((error) => {
-    //     removeImage(image);
-    //     console.error("Failed to create a new record : ", error);
-    //     return res.status(400).json(error);
-    //   });
-    // User.sync();
     try {
-      const newUser = await User.create(user)
-      if(user.role === 'donor'){
-        await Donor.create({UserId: newUser.id })
-        return res.json({data: newUser})
+      const newUser = await User.create(user);
+      if (user.role === "donor") {
+        const newDonor = await Donor.create();
+        await newDonor.setUser(newUser);
+        return res.json({ user: newUser, donor: newDonor });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }
