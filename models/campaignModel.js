@@ -25,6 +25,7 @@ const Campaign = sequelize.define(
     },
     amountContributed: {
       type: DataTypes.DECIMAL(10,2),
+      defaultValue: 0
     },
     status: {
       type: DataTypes.ENUM("active", "inactive", "completed"),
@@ -43,13 +44,6 @@ const Campaign = sequelize.define(
     },
   }
 );
-
-// try {
-//   await sequelize.sync({ force: true });
-//   console.log('Tables synced successfully');
-// } catch (error) {
-//   console.error('Error syncing tables:', error);
-// }
 
 
 export default Campaign;

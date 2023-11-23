@@ -7,15 +7,11 @@ import sequelize from "./config/dbConnection.js";
 
 Creator.hasOne(User);
 User.belongsTo(Creator);
-Donor.belongsToMany(Campaign, {through: Donations, foreignKey: 'DonorId'})
-Campaign.belongsToMany(Donor, {through: Donations, foreignKey: 'CampaignId'})
+Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
+Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
-Donor.hasOne(User)
-User.belongsTo(Donor)
+Donor.hasOne(User);
+User.belongsTo(Donor);
 
 
 
-// await Donor.sync({alter: true})
-// await User.sync({alter: true})
-
-// await sequelize.sync({alter: true}) 
