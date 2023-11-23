@@ -1,16 +1,14 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection.js";
 
-const Donations = sequelize.define('Donations', {
+const Donations = sequelize.define("Donations", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    unique: true,
+    autoIncrement: true,
+  },
   transferredAmount: DataTypes.INTEGER,
-  // DonorId: {
-  //   type: DataTypes.INTEGER,
-  //   references:{
-  //     model: 'Donors',
-  //     key: 'id'
-  //   }
-  // }
-})
-
-
-export default Donations
+});
+export default Donations;

@@ -1,4 +1,5 @@
 import Campaign from '../models/campaignModel.js';
+import fs from 'fs'
 
 // Get All Campaigns
 

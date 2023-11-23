@@ -1,5 +1,7 @@
 // import User from "../models/user.js";
 import fs from "fs";
+import User from "../models/User.models.js";
+import Donor from "../models/donor.js";
 
 function removeImage(image) {
   fs.unlinkSync(image, (err) => {
@@ -12,11 +14,11 @@ function removeImage(image) {
 }
 
 async function getAllUsers(req, res) {
-  let getAll = await User.findAll();
+  let getAll = await User.findAll({include: 'DonorId'});
   return res.status(200).json(getAll);
 }
 
-function addNewUser(req, res) {
+async function addNewUser(req, res) {
   let user = req.body;
   const image = req.file.path;
   if (
@@ -35,17 +37,26 @@ function addNewUser(req, res) {
   } else {
     user.image = image;
 
-    let newUser = User.create({ ...user })
-      .then((result) => {
-        console.log(result);
-        return res.status(200).json(result);
-      })
-      .catch((error) => {
-        removeImage(image);
-        console.error("Failed to create a new record : ", error);
-        return res.status(400).json(error);
-      });
+    // let newUser = User.create({ ...user })
+    //   .then((result) => {
+    //     console.log(result);
+    //     return res.status(200).json(result);
+    //   })
+    //   .catch((error) => {
+    //     removeImage(image);
+    //     console.error("Failed to create a new record : ", error);
+    //     return res.status(400).json(error);
+    //   });
     // User.sync();
+    try {
+      const newUser = await User.create(user)
+      if(user.role === 'donor'){
+        await Donor.create({UserId: newUser.id })
+        return res.json({data: newUser})
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
