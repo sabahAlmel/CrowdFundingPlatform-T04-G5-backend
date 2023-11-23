@@ -22,23 +22,12 @@ const User = sequelize.define("User", {
   role: {
     type: DataTypes.STRING,
     allowNull: false,
+    defaultValue: "Donor",
   },
   image: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
-
-// User.create({
-//   firstName: "hi",
-//   lastName: "hii2",
-//   userName: "2hi",
-//   password: "hello",
-//   role: "admin",
-//   image: "image12",
-// }).then(() => {
-//   console.log("fist element");
-// });
-// User.sync();
 
 export default User;
