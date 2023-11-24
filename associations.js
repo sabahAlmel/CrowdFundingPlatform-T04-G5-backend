@@ -11,7 +11,8 @@ Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 Creator.hasMany(Campaign);
 Campaign.belongsTo(Creator);
-// sequelize.sync({ alter: true });
 
-User.hasOne(Donor, { foreignKey: "DonorId" });
-Donor.belongsTo(User, { foreignKey: "DonorId" });
+User.hasOne(Donor, { foreignKey: "UserId" });
+Donor.belongsTo(User, { foreignKey: "UserId" });
+
+await sequelize.sync({ alter: true });

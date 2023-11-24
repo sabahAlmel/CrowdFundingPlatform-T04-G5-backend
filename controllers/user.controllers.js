@@ -3,7 +3,9 @@ import fs from "fs";
 import User from "../models/User.models.js";
 import Donor from "../models/donor.js";
 import Creator from "../models/Creator.models.js";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 function removeImage(image) {
   fs.unlinkSync(image, (err) => {
     if (err) {
@@ -48,17 +50,25 @@ async function addNewUser(req, res) {
   } else if (!image) {
     return res.status(400).json({ error: "missing image" });
   } else {
+    // const token = createToken(user.id);
+    const hashedPass = await bcrypt.hash(user.password, 10);
     user.image = image;
-
     try {
-      const newUser = await User.create(user);
+      const newUser = await User.create({ ...user, password: hashedPass });
+
       if (user.role === "donor") {
         const newDonor = await Donor.create();
         await newDonor.setUser(newUser);
+        const token = jwt.sign(
+          { id: newDonor.id, role: "donor" },
+          process.env.TOKEN,
+          { expiresIn: "2h" }
+        );
         return res.json({ user: newUser, donor: newDonor });
       } else if (user.role === "creator") {
         const newCreator = await Creator.create();
         await newCreator.setUser(newUser);
+
         return res.json({ user: newUser, creator: newCreator });
       }
     } catch (error) {
