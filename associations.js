@@ -3,6 +3,7 @@ import Creator from "./models/Creator.models.js";
 import Campaign from "./models/campaignModel.js";
 import Donor from "./models/donor.js";
 import Donations from "./models/donations.js";
+import Category from './models/categoryModel.js'
 import sequelize from "./config/dbConnection.js";
 import Category from "./models/categoryModel.js"
 
@@ -14,12 +15,12 @@ Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 Donor.hasOne(User);
 User.belongsTo(Donor);
 
-Category.hasMany(Campaign, {foreignKey : 'categoryId'});  
-Campaign.belongsTo(Category, {foreignKey : 'categoryId'});
+Category.hasMany(Campaign);  
+Campaign.belongsTo(Category);
 
+User.hasOne(Donor, { foreignKey: "UserId" });
+Donor.belongsTo(User, { foreignKey: "UserId" });
 
-Creator.hasMany(Campaign,{foreignKey:'creatorId'});  
-Campaign.belongsTo(Creator,{foreignKey:'creatorId'});
-
-// await sequelize.sync({alter: true})
+Category.hasMany(Campaign)
+Campaign.belongsTo(Category)
 
