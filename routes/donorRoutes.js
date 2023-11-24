@@ -7,6 +7,7 @@ const donorRouter = express.Router()
 donorRouter.post('/add', addDonor)
 donorRouter.patch('/edit', editDonor)
 donorRouter.get('/', paginate, readDonors)
+// donorRouter.delete('/delete', deleteDonor)
 
 
 export default donorRouter
