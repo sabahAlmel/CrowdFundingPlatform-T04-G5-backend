@@ -2,6 +2,7 @@
 import fs from "fs";
 import User from "../models/User.models.js";
 import Donor from "../models/donor.js";
+import Creator from "../models/Creator.models.js";
 
 function removeImage(image) {
   fs.unlinkSync(image, (err) => {
@@ -14,7 +15,19 @@ function removeImage(image) {
 }
 
 async function getAllUsers(req, res) {
-  let getAll = await User.findAll({ include: "DonorId" });
+  const role = req.query.role;
+  let options;
+  if (role) {
+    options =
+      role === "creator"
+        ? { include: Creator, where: { role: "creator" } }
+        : { include: Donor, where: { role: "Donor" } };
+  }
+  console.log(options);
+  let getAll = await User.findAll({
+    include: Creator,
+    where: { role: "creator" },
+  });
   return res.status(200).json(getAll);
 }
 
@@ -43,6 +56,10 @@ async function addNewUser(req, res) {
         const newDonor = await Donor.create();
         await newDonor.setUser(newUser);
         return res.json({ user: newUser, donor: newDonor });
+      } else if (user.role === "creator") {
+        const newCreator = await Creator.create();
+        await newCreator.setUser(newUser);
+        return res.json({ user: newUser, creator: newCreator });
       }
     } catch (error) {
       console.log(error);
