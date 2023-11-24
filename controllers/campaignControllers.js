@@ -36,11 +36,21 @@ const getOneCampaign = async (req,res) => {
   }
 }
 
+
+// Get Campaigns by category
+
+// const getCampaignsByCategory = async (req,res) =>{
+
+//   try
+// }
+
+
+
 // Create a new Campaign
 
 const createCampaign = async (req,res) =>{
 
-  const {title , target , description , amountContributed , status} = req.body;
+  const {title , target , description , amountContributed , status , categoryId , creatorId } = req.body;
 
   if(!req.file){
     return res.status(400).json({error:"Please upload an image"})
@@ -51,7 +61,7 @@ const createCampaign = async (req,res) =>{
   try{
 
     const newCampaign = await Campaign.create({
-      title,target , description , amountContributed , status , image
+      title,target , description , amountContributed , status , categoryId , creatorId , image
     })
 
     res.status(201).json(newCampaign)

@@ -1,6 +1,8 @@
 // models/CampaignModel.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection.js";
+import Category from "./categoryModel.js";
+import Creator from "./Creator.models.js";
 
 const Campaign = sequelize.define(
   "Campaign",
@@ -35,6 +37,22 @@ const Campaign = sequelize.define(
     image:{
       type : DataTypes.STRING,
       allowNull:false
+    },
+    categoryId:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      references: {
+        model: Category,
+        key: 'id',
+      },
+    },
+    creatorId:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      references:{
+        model: Creator,
+        key:'id',
+      }
     }
   },
   {
@@ -44,6 +62,14 @@ const Campaign = sequelize.define(
     },
   }
 );
+
+try {
+  await Campaign.sync({ force: true });
+  console.log('Tables synced successfully');
+} catch (error) {
+  console.error('Error syncing tables:', error);
+}
+
 
 
 export default Campaign;
