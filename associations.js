@@ -15,14 +15,12 @@ Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 Donor.hasOne(User);
 User.belongsTo(Donor);
 
-Category.hasMany(Campaign , {foreignKey: "CategoryId"});  
-Campaign.belongsTo(Category , {foreignKey: "CategoryId"});
+Category.hasMany(Campaign);  
+Campaign.belongsTo(Category);
 
 User.hasOne(Donor, { foreignKey: "UserId" });
 Donor.belongsTo(User, { foreignKey: "UserId" });
 
 Category.hasMany(Campaign)
 Campaign.belongsTo(Category)
-
-sequelize.sync({alter:true})
 
