@@ -1,5 +1,7 @@
 import Campaign from '../models/campaignModel.js';
 import fs from "fs";
+import Category from '../models/categoryModel.js';
+import { where } from 'sequelize';
 
 // Get All Campaigns
 
@@ -60,11 +62,16 @@ const createCampaign = async (req,res) =>{
 
   try{
 
+    // const category = await Category.findOne({where: {name : categoryName}})
+    // await newCampaign.setCategory(category)
+
     const newCampaign = await Campaign.create({
-      title,target , description , amountContributed , status , categoryId , creatorId , image
+      title,target , description , amountContributed , status  , image , categoryId , creatorId
     })
     
+    // await newCampaign.setCreator(categoryId)
     res.status(201).json(newCampaign)
+    console.log(newCampaign)
   }
   catch(error){
     console.log(error);
@@ -72,6 +79,7 @@ const createCampaign = async (req,res) =>{
     const path = `public/images/${req.file.filename}`;
     fs.unlinkSync(path)
   }
+
 }
 
 

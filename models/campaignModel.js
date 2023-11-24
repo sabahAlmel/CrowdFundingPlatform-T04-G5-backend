@@ -38,22 +38,6 @@ const Campaign = sequelize.define(
       type : DataTypes.STRING,
       allowNull:false
     },
-    categoryId:{
-      type:DataTypes.INTEGER,
-      allowNull:false,
-      references: {
-        model: Category,
-        key: 'id',
-      },
-    },
-    creatorId:{
-      type:DataTypes.INTEGER,
-      allowNull:false,
-      references:{
-        model: Creator,
-        key:'id',
-      }
-    }
   },
   {
     timestamps: {
@@ -63,12 +47,6 @@ const Campaign = sequelize.define(
   }
 );
 
-try {
-  await Campaign.sync({ force: true });
-  console.log('Tables synced successfully');
-} catch (error) {
-  console.error('Error syncing tables:', error);
-}
 
 
 
