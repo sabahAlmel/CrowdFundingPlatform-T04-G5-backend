@@ -7,7 +7,11 @@ import { where } from 'sequelize';
 
 const getAllCampaigns = async (req, res) => {
   try {
-    const campaigns = await Campaign.findAll();
+    const campaigns = await Campaign.findAll({
+      include: [Category],
+      offset: req.offset,
+      limit: req.limit,
+    });
     res.json(campaigns);
     
   } catch (error) {
