@@ -3,7 +3,7 @@ import Creator from "./models/Creator.models.js";
 import Campaign from "./models/campaignModel.js";
 import Donor from "./models/donor.js";
 import Donations from "./models/donations.js";
-import Category from './models/categoryModel.js'
+import Category from "./models/categoryModel.js";
 import sequelize from "./config/dbConnection.js";
 // import Category from "./models/categoryModel.js"
 
@@ -12,15 +12,20 @@ Creator.belongsTo(User);
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
-Donor.hasOne(User);
-User.belongsTo(Donor);
-
-Category.hasMany(Campaign);  
+Category.hasMany(Campaign);
 Campaign.belongsTo(Category);
 
-User.hasOne(Donor, { foreignKey: "UserId" });
-Donor.belongsTo(User, { foreignKey: "UserId" });
+User.hasOne(Donor, { foreignKey: "UserId", onDelete: 'CASCADE' });
+Donor.belongsTo(User, { foreignKey: "UserId", onDelete: 'CASCADE' });
 
-Category.hasMany(Campaign)
-Campaign.belongsTo(Category)
+Category.hasMany(Campaign);
+Campaign.belongsTo(Category);
 
+
+
+Category.hasMany(Campaign);
+Campaign.belongsTo(Category);
+
+// await User.sync({alter: true})
+// await Donor.sync({alter: true})
+// await sequelize.sync({alter:true})
