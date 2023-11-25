@@ -18,13 +18,7 @@ Campaign.belongsTo(Category);
 User.hasOne(Donor, { foreignKey: "UserId", onDelete: 'CASCADE' });
 Donor.belongsTo(User, { foreignKey: "UserId", onDelete: 'CASCADE' });
 
-Category.hasMany(Campaign);
-Campaign.belongsTo(Category);
 
-
-
-Category.hasMany(Campaign);
-Campaign.belongsTo(Category);
 
 // await User.sync({alter: true})
 // await Donor.sync({alter: true})

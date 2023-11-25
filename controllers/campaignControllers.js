@@ -2,8 +2,6 @@ import Campaign from '../models/campaignModel.js';
 import fs from "fs";
 import Category from '../models/categoryModel.js';
 import { where } from 'sequelize';
-import Category from '../models/categoryModel.js';
-import { where } from 'sequelize';
 
 // Get All Campaigns
 

@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection.js";
-import User from "./User.models.js";
 const Creator = sequelize.define("Creator", {
   nbCampaign: {
     type: DataTypes.INTEGER,
