@@ -12,8 +12,11 @@ Creator.belongsTo(User);
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
-Category.hasMany(Campaign);
+Category.hasMany(Campaign, { onDelete: "CASCADE" });
 Campaign.belongsTo(Category);
+
+Creator.hasMany(Campaign);
+Campaign.belongsTo(Creator);
 
 User.hasOne(Donor, { foreignKey: "UserId", onDelete: "CASCADE" });
 Donor.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
