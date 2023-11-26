@@ -24,12 +24,13 @@ async function getAllUsers(req, res) {
     options =
       role === "creator"
         ? { include: Creator, where: { role: "creator" } }
-        : { include: Donor, where: { role: "Donor" } };
+        : { include: Donor, where: { role: "donor" } };
   }
   console.log(options);
   let getAll = await User.findAll({
-    include: Creator,
-    where: { role: "creator" },
+    ...options,
+    offset: req.offset,
+    limit: req.limit,
   });
   return res.status(200).json(getAll);
 }
