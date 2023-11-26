@@ -6,7 +6,7 @@ import {
   deleteUser,
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.js";
-import { paginate } from "../middlewares/donor.js";
+import { paginate } from "../middlewares/pagination.js";
 
 const userRouter = express.Router();
 
