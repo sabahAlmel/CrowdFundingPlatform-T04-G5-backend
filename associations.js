@@ -7,7 +7,7 @@ import Category from "./models/categoryModel.js";
 import sequelize from "./config/dbConnection.js";
 // import Category from "./models/categoryModel.js"
 
-User.hasOne(Creator);
+User.hasOne(Creator, { onDelete: "CASCADE" });
 Creator.belongsTo(User);
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });

@@ -130,14 +130,13 @@ async function updateUser(req, res) {
 
 function deleteUser(req, res) {
   let id = req.params.id;
-  User.findOne({ where: { id: id } }).then((user) => {
+  User.findByPk(id, { include: [Creator, Donor] }).then((user) => {
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     } else {
       const image = user.image;
-      return User.destroy({
-        where: { id: id },
-      })
+      return user
+        .destroy()
         .then(() => {
           removeImage(image);
           console.log("Successfully deleted record.");
