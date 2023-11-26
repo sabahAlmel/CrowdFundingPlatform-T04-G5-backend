@@ -34,7 +34,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM("active", "inactive", "completed"),
         allowNull: false,
-        defaultValue: "active",
+        defaultValue: "pending",
       },
       image: {
         type: Sequelize.STRING,

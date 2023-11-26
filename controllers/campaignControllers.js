@@ -1,11 +1,17 @@
 import Campaign from '../models/campaignModel.js';
 import fs from "fs";
+import Category from '../models/categoryModel.js';
+import { where } from 'sequelize';
 
 // Get All Campaigns
 
 const getAllCampaigns = async (req, res) => {
   try {
-    const campaigns = await Campaign.findAll();
+    const campaigns = await Campaign.findAll({
+      include: [Category],
+      offset: req.offset,
+      limit: req.limit,
+    });
     res.json(campaigns);
     
   } catch (error) {
@@ -36,11 +42,44 @@ const getOneCampaign = async (req,res) => {
   }
 }
 
+
+// Get Campaigns by category
+
+const getCampaignsByCategory = async (req,res) =>{
+
+  const categoryName = req.params.category
+
+  console.log(categoryName)
+
+  try{
+
+    const category = await Category.findOne({where : {name : categoryName}})
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const campaigns = await Campaign.findAll({
+      where: { categoryId: category.id },
+      include: [{ model: Category, attributes: ['name'] }],
+    });
+
+    res.json(campaigns);
+
+  }
+  catch(error){
+    console.log(error)
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
+
+
+
 // Create a new Campaign
 
 const createCampaign = async (req,res) =>{
 
-  const {title , target , description , amountContributed , status} = req.body;
+  const {title , target , description , amountContributed , status , categoryName  } = req.body;
 
   if(!req.file){
     return res.status(400).json({error:"Please upload an image"})
@@ -50,11 +89,22 @@ const createCampaign = async (req,res) =>{
 
   try{
 
+    const category = await Category.findOne({where: {name : categoryName}})
+    console.log(category)
+    
+
     const newCampaign = await Campaign.create({
-      title,target , description , amountContributed , status , image
+      title,target , description , amountContributed , status  , image 
     })
 
+    await newCampaign.setCategory(category)
+
+    // await newCampaign.setCreator(req.user.id);
+  
+    
+    
     res.status(201).json(newCampaign)
+    console.log(newCampaign)
   }
   catch(error){
     console.log(error);
@@ -62,6 +112,7 @@ const createCampaign = async (req,res) =>{
     const path = `public/images/${req.file.filename}`;
     fs.unlinkSync(path)
   }
+
 }
 
 
@@ -133,4 +184,4 @@ const deleteCampaign = async (req,res) =>{
 
 
 
-export { getAllCampaigns , createCampaign , getOneCampaign , updateCampaign , deleteCampaign};
+export { getAllCampaigns , createCampaign , getOneCampaign , getCampaignsByCategory , updateCampaign , deleteCampaign};

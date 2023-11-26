@@ -9,6 +9,9 @@ const Donor = sequelize.define("Donor", {
     allowNull: false,
   },
   amountPaid: { type: DataTypes.INTEGER, defaultValue: 0, allowNull: false },
+  token: {
+    type: DataTypes.STRING
+  }
 });
 
 export default Donor;

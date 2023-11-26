@@ -21,12 +21,6 @@ const Category = sequelize.define(
   }
 );
 
-// try {
-//   await sequelize.sync({ force: true });
-//   console.log('Tables synced successfully');
-// } catch (error) {
-//   console.error('Error syncing tables:', error);
-// }
 
 
 export default Category;

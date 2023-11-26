@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/dbConnection.js";
 
 const Donations = sequelize.define("Donations", {

@@ -1,6 +1,8 @@
 // models/CampaignModel.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection.js";
+import Category from "./categoryModel.js";
+import Creator from "./Creator.models.js";
 
 const Campaign = sequelize.define(
   "Campaign",
@@ -28,14 +30,18 @@ const Campaign = sequelize.define(
       defaultValue: 0
     },
     status: {
-      type: DataTypes.ENUM("active", "inactive", "completed"),
+      type: DataTypes.ENUM("active", "pending", "completed"),
       allowNull: false,
-      defaultValue:"active"
+      defaultValue:"pending"
     },
     image:{
       type : DataTypes.STRING,
       allowNull:false
-    }
+    },
+    // categoryName: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
   },
   {
     timestamps: {

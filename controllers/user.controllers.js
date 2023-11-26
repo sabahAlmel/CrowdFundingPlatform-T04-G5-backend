@@ -3,9 +3,10 @@ import fs from "fs";
 import User from "../models/User.models.js";
 import Donor from "../models/donor.js";
 import Creator from "../models/Creator.models.js";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import "dotenv/config";
+
 function removeImage(image) {
   fs.unlinkSync(image, (err) => {
     if (err) {
@@ -54,22 +55,41 @@ async function addNewUser(req, res) {
     const hashedPass = await bcrypt.hash(user.password, 10);
     user.image = image;
     try {
+      const hashedPass = await bcrypt.hash(user.password, 10);
       const newUser = await User.create({ ...user, password: hashedPass });
-
       if (user.role === "donor") {
         const newDonor = await Donor.create();
-        await newDonor.setUser(newUser);
         const token = jwt.sign(
-          { id: newDonor.id, role: "donor" },
+          { id: newUser.id, role: "donor" },
           process.env.TOKEN,
           { expiresIn: "2h" }
         );
+        newDonor.token = token;
+        await newDonor.setUser(newUser);
+        await newUser.save();
+        await newDonor.save();
         return res.json({ user: newUser, donor: newDonor });
       } else if (user.role === "creator") {
         const newCreator = await Creator.create();
+        const token = jwt.sign(
+          { id: newUser.id, role: "creator" },
+          process.env.TOKEN,
+          { expiresIn: "2h" }
+        );
+        newCreator.token = token;
         await newCreator.setUser(newUser);
-
+        await newUser.save();
+        await newCreator.save();
         return res.json({ user: newUser, creator: newCreator });
+      } else {
+        const token = jwt.sign(
+          { id: newUser.id, role: "admin" },
+          process.env.TOKEN,
+          { expiresIn: "2h" }
+        );
+        user.token = token;
+        await user.save();
+        res.json({ data: newUser });
       }
     } catch (error) {
       console.log(error);
