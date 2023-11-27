@@ -4,9 +4,7 @@ import Campaign from "./models/campaignModel.js";
 import Donor from "./models/donor.js";
 import Donations from "./models/donations.js";
 import Category from "./models/categoryModel.js";
-import sequelize from "./config/dbConnection.js";
-import Admin from "./models/adminModel.js";
-// import Category from "./models/categoryModel.js"
+import Admin from './models/adminModel.js'
 
 User.hasOne(Creator);
 Creator.belongsTo(User);

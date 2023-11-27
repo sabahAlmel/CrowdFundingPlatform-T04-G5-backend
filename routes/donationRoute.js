@@ -1,6 +1,7 @@
 import express from 'express'
 import { createDonation, getDonations } from '../controllers/donationsConroller.js'
 import { checkBalance } from '../middlewares/donationsMidware.js'
+import { authorize } from '../middlewares/auth.js';
 
 const donationRouter = express.Router()
 
