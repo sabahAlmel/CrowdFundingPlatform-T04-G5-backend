@@ -6,10 +6,11 @@ export function authorize(req, res, next) {
     return res.sendStatus(403);
   }
   try {
-    const data  = jwt.verify(token, process.env.TOKEN)
-    req.userId = data.id
-    req.userRole = data.role
-    return next()
+    const data = jwt.verify(token, process.env.TOKEN);
+    req.userId = data.id;
+    req.userRole = data.role;
+    console.log(data)
+    return next();
   } catch (error) {
     console.log(error)
     return res.sendStatus(403)

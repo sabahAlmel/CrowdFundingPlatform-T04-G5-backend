@@ -5,7 +5,7 @@ import { paginate } from '../middlewares/donor.js'
 const donorRouter = express.Router()
 
 donorRouter.post('/add', addDonor)
-donorRouter.patch('/edit', editDonor)
+donorRouter.patch('/deposit', editDonor)
 donorRouter.get('/', paginate, readDonors)
 // donorRouter.delete('/delete', deleteDonor)
 

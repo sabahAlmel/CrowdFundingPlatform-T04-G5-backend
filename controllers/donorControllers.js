@@ -14,21 +14,15 @@ export async function addDonor(req, res) {
   }
 }
 export async function editDonor(req, res) {
-  const { donorId, balance, amountPaid } = req.body;
-
+  const { donorId, balance } = req.body;
+  console.log(donorId)
   try {
-    const donor = await Donor.findOne({ where: { id: donorId } });
-    donor.set({
-      balance: balance || donor.balance - amountPaid,
-      amountPaid: amountPaid || donor.amountPaid,
-      numberOfContribution: !balance
-        ? donor.numberOfContribution + 1
-        : donor.numberOfContribution,
-    });
+    let donor = await Donor.findByPk(donorId);
+    donor.balance += Number(balance)
     await donor.save();
     res.json({
       message: `user with the id ${donorId} is updated `,
-      donor: donor.toJSON(),
+      donor: donor
     });
   } catch (error) {
     console.log(error);

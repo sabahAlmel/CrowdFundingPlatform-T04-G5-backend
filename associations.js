@@ -5,6 +5,7 @@ import Donor from "./models/donor.js";
 import Donations from "./models/donations.js";
 import Category from "./models/categoryModel.js";
 import sequelize from "./config/dbConnection.js";
+import Admin from "./models/adminModel.js";
 // import Category from "./models/categoryModel.js"
 
 User.hasOne(Creator);
@@ -23,8 +24,11 @@ Campaign.belongsTo(Category);
 
 
 
-Category.hasMany(Campaign);
-Campaign.belongsTo(Category);
+User.hasOne(Donor, { onDelete: "CASCADE" });
+Donor.belongsTo(User, { onDelete: "CASCADE" });
+
+User.hasOne(Admin, { onDelete: "CASCADE" });
+Admin.belongsTo(User, { onDelete: "CASCADE" });
 
 // await User.sync({alter: true})
 // await Donor.sync({alter: true})

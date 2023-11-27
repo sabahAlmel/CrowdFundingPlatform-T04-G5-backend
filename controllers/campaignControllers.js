@@ -1,9 +1,7 @@
-import Campaign from '../models/campaignModel.js';
+import Campaign from "../models/campaignModel.js";
 import fs from "fs";
-import Category from '../models/categoryModel.js';
-import { where } from 'sequelize';
-import Category from '../models/categoryModel.js';
-import { where } from 'sequelize';
+import Category from "../models/categoryModel.js";
+import { where } from "sequelize";
 
 // Get All Campaigns
 
@@ -15,175 +13,187 @@ const getAllCampaigns = async (req, res) => {
       limit: req.limit,
     });
     res.json(campaigns);
-    
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
 // Get a specific Campaign
 
-const getOneCampaign = async (req,res) => {
+const getOneCampaign = async (req, res) => {
+  const campaignId = req.params.id;
 
-  const campaignId = req.params.id
-
-  try{
+  try {
     const campaign = await Campaign.findOne({ where: { id: campaignId } });
 
     if (campaign) {
       res.status(200).json(campaign);
     } else {
-      res.status(404).json({ error: 'Campaign not found' });
+      res.status(404).json({ error: "Campaign not found" });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  catch(error){
-    console.log(error)
-    res.status(500).json({error:"Internal Server Error"})
-  }
-}
-
+};
 
 // Get Campaigns by category
 
-const getCampaignsByCategory = async (req,res) =>{
+const getCampaignsByCategory = async (req, res) => {
+  const categoryName = req.params.category;
 
-  const categoryName = req.params.category
+  console.log(categoryName);
 
-  console.log(categoryName)
-
-  try{
-
-    const category = await Category.findOne({where : {name : categoryName}})
+  try {
+    const category = await Category.findOne({ where: { name: categoryName } });
 
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
 
     const campaigns = await Campaign.findAll({
       where: { categoryId: category.id },
-      include: [{ model: Category, attributes: ['name'] }],
+      include: [{ model: Category, attributes: ["name"] }],
     });
 
     res.json(campaigns);
-
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  catch(error){
-    console.log(error)
-    res.status(500).json({error:"Internal Server Error"})
-  }
-}
-
-
+};
 
 // Create a new Campaign
 
-const createCampaign = async (req,res) =>{
+const createCampaign = async (req, res) => {
+  const {
+    title,
+    target,
+    description,
+    amountContributed,
+    status,
+    categoryName,
+  } = req.body;
 
-  const {title , target , description , amountContributed , status , categoryName  } = req.body;
-
-  if(!req.file){
-    return res.status(400).json({error:"Please upload an image"})
+  if (!req.file) {
+    return res.status(400).json({ error: "Please upload an image" });
   }
 
-  const image = req.file.filename
+  const image = req.file.filename;
 
-  try{
-
-    const category = await Category.findOne({where: {name : categoryName}})
-    console.log(category)
-    
+  try {
+    const category = await Category.findOne({ where: { name: categoryName } });
+  
 
     const newCampaign = await Campaign.create({
-      title,target , description , amountContributed , status  , image 
-    })
+      title,
+      target,
+      description,
+      amountContributed,
+      status,
+      image,
+    });
 
-    await newCampaign.setCategory(category)
+    await newCampaign.setCategory(category);
+    await newCampaign.setCreator(req.userId);
 
-    // await newCampaign.setCreator(req.user.id);
-  
-    
-    
-    res.status(201).json(newCampaign)
-    console.log(newCampaign)
-  }
-  catch(error){
+    await newCampaign.save()
+    res.status(201).json(newCampaign);
+    console.log(newCampaign);
+  } catch (error) {
     console.log(error);
-    res.status(500).json({error:"Internal Server Error"})
+    res.status(500).json({ error: "Internal Server Error" });
     const path = `public/images/${req.file.filename}`;
-    fs.unlinkSync(path)
+    fs.unlinkSync(path);
   }
-
-}
-
+};
 
 // Update a Campaign
 
-const updateCampaign = async (req,res) =>{
-
-  const campaignId = req.params.id
+const updateCampaign = async (req, res) => {
+  const campaignId = req.params.id;
 
   const oldCampaign = await Campaign.findOne({ where: { id: campaignId } });
 
-  try{
+  try {
     const updatedData = req.body;
 
     const oldImagePath = `public/images/${oldCampaign.image}`;
 
-    if(req.file){
-      updatedData.image = req.file.filename
+    if (req.file) {
+      updatedData.image = req.file.filename;
 
-      fs.unlink(oldImagePath, (err) =>{
-        if(err){
-          return res.status(500).json({error : `error deleting the old image`})
+      fs.unlink(oldImagePath, (err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: `error deleting the old image` });
         }
-      })
+      });
     }
 
     await oldCampaign.update(updatedData);
 
-    res.status(200).json({ message: 'Campaign updated successfully' })
+    res.status(200).json({ message: "Campaign updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: `Error , ${error.message}` });
   }
-  catch(error){
-    console.log(error)
-    res.status(500).json({error:`Error , ${error.message}`})
-  }
-}
+};
 
+// Delete a specific Campaign
 
-// Delete a specific Campaign 
+const deleteCampaign = async (req, res) => {
+  const campaignId = req.params.id;
 
-const deleteCampaign = async (req,res) =>{
+  try {
+    const campaignToDelete = await Campaign.findOne({
+      where: { id: campaignId },
+    });
 
-  const campaignId = req.params.id
-
-  try{
-    const campaignToDelete = await Campaign.findOne({ where: { id: campaignId } });
-
-    if(!campaignToDelete){
-      return res.status(404).json({error:'Campaign not found'})
+    if (!campaignToDelete) {
+      return res.status(404).json({ error: "Campaign not found" });
     }
 
     await campaignToDelete.destroy();
 
     const oldImagePath = `public/images/${campaignToDelete.image}`;
 
-    fs.unlink(oldImagePath, (err) =>{
-      if(err){
-        return res.status(500).json({error : `error deleting the old image`})
+    fs.unlink(oldImagePath, (err) => {
+      if (err) {
+        return res.status(500).json({ error: `error deleting the old image` });
       }
-    })
+    });
 
-    res.status(200).json({message:'Campaign deleted successfully'})
-  }
-  catch(error){
+    res.status(200).json({ message: "Campaign deleted successfully" });
+  } catch (error) {
     console.log(error);
-    res.status(500).json({error:'Internal Server Error'})
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
+};
+async function getPendingCampaigns(req, res) {
+  if (req.userRole !== 'admin') {
+    return res.json({message: 'Not Authorized'})
+  }
+  try {
+    const data = await Campaign.findAll({
+      include: Category,
+      where: { status: "pending" },
+    });
+    res.json({data: data})
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "Internal server error" });
+  }
 }
 
-
-
-export { getAllCampaigns , createCampaign , getOneCampaign , getCampaignsByCategory , updateCampaign , deleteCampaign};
+export {
+  getAllCampaigns,
+  createCampaign,
+  getOneCampaign,
+  getCampaignsByCategory,
+  updateCampaign,
+  deleteCampaign,
+  getPendingCampaigns
+};
