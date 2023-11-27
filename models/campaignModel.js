@@ -38,10 +38,6 @@ const Campaign = sequelize.define(
       type : DataTypes.STRING,
       allowNull:false
     },
-    // categoryName: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false,
-    // },
   },
   {
     timestamps: {

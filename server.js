@@ -11,6 +11,7 @@ import donationRouter from "./routes/donationRoute.js";
 import cookieParser from "cookie-parser";
 import { signIn } from "./controllers/loginController.js";
 import { authorize, logOut } from "./middlewares/auth.js";
+import './models/notificationModel.js'
 
 const port = process.env.PORT;
 const app = express();
