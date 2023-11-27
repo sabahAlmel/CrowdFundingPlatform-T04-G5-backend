@@ -9,6 +9,7 @@ import sequelize from "./config/dbConnection.js";
 
 User.hasOne(Creator, { onDelete: "CASCADE" });
 Creator.belongsTo(User);
+
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
@@ -24,3 +25,4 @@ Donor.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
 // await User.sync({alter: true})
 // await Donor.sync({alter: true})
 // await sequelize.sync({alter:true})
+// Campaign.sync({alter: true})
