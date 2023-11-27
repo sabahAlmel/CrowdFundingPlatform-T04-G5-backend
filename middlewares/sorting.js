@@ -1,5 +1,5 @@
 export function sortData(req, res, next) {
-  const { criteria, order } = req.body;
+  const { criteria, order } = req.query;
   let sort;
   if (criteria) {
     sort = [[criteria, order || "ASC"]];
@@ -7,6 +7,6 @@ export function sortData(req, res, next) {
   } else {
     sort = [];
   }
-  req.sort = sort
-  next()
+  req.sort = sort;
+  next();
 }

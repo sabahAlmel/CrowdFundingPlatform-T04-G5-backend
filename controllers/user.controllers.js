@@ -19,7 +19,7 @@ function removeImage(image) {
 }
 
 async function getAllUsers(req, res) {
-  const role = req.body.role;
+  const role = req.query.role;
   let options;
   if (role) {
     options =
@@ -27,11 +27,8 @@ async function getAllUsers(req, res) {
         ? { include: Creator, where: { role: "creator" } }
         : role === "admin"
         ? { include: Admin, where: { role: "admin" } }
-        : { include: Donor, where: { role: "Donor" } };
-  } else {
-    options = {};
+        : { include: Donor, where: { role: "donor" } };
   }
-  console.log(options);
   let getAll = await User.findAll({
     ...options,
     order: req.sort,
@@ -136,7 +133,8 @@ async function addNewUser(req, res) {
 
 async function updateUser(req, res) {
   const user = req.body;
-  user.id = req.body.id;
+  user.id = req.userId;
+  console.log(req.userId);
   const newImage = req.file.path;
   const found = await User.findOne({ where: { id: user.id } });
   if (!found) {
