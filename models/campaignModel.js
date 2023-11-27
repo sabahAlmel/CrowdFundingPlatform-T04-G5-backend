@@ -1,8 +1,7 @@
 // models/CampaignModel.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection.js";
-import Category from "./categoryModel.js";
-import Creator from "./Creator.models.js";
+
 
 const Campaign = sequelize.define(
   "Campaign",
@@ -26,7 +25,7 @@ const Campaign = sequelize.define(
       }
     },
     amountContributed: {
-      type: DataTypes.DECIMAL(10,2),
+      type: DataTypes.INTEGER,
       defaultValue: 0
     },
     status: {
@@ -46,6 +45,7 @@ const Campaign = sequelize.define(
     },
   }
 );
+
 
 
 export default Campaign;
