@@ -19,6 +19,23 @@ const getAllCampaigns = async (req, res) => {
   }
 };
 
+// Get Campaigns by creator Id
+
+const getCampaignsByCreatorId = async (req,res) =>{
+  try{
+    const campaigns = await Campaign.findAll({
+      where : {CreatorId : req.userId}
+    })
+    res.status(200).json(campaigns)
+  }
+  catch(error){
+    console.log(error)
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
+
+
+
 // Get a specific Campaign
 
 const getOneCampaign = async (req, res) => {
@@ -195,5 +212,6 @@ export {
   getCampaignsByCategory,
   updateCampaign,
   deleteCampaign,
-  getPendingCampaigns
+  getPendingCampaigns,
+  getCampaignsByCreatorId
 };
