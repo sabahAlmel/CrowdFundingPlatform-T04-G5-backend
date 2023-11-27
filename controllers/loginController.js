@@ -9,10 +9,15 @@ export async function signIn(req, res, next) {
     if (!(username && password)) {
       return res.status(400).send("All inputs are required");
     }
-    const user = await User.findOne({ where: { userName: username } });
+    const user = await User.findOne({
+      where: { userName: username },
+      include: Object.values(User.associations),
+    })
+    const id = user.role === 'creator' ? user.Creator.id : user.role === 'admin' ? user.Admin.id : user.Donor.id
+    
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign(
-        { id: user.id, role: user.role },
+        { id: id, role: user.role },
         process.env.TOKEN,
         { expiresIn: "2h" }
       );

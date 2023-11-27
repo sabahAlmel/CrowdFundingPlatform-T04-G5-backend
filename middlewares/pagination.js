@@ -8,6 +8,8 @@ export function paginate(req, res, next) {
     req.limit = Number(limit);
     next();
   } else {
-    res.status(401).send("Error finding pagination queries");
+    req.offset = 0
+    req.limit= 200
+    next()
   }
 }
