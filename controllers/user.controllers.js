@@ -38,63 +38,89 @@ async function getAllUsers(req, res) {
 async function addNewUser(req, res) {
   let user = req.body;
   const image = req.file.path;
-  if (
-    !user.firstName ||
-    !user.lastName ||
-    !user.userName ||
-    !user.password ||
-    !user.role
-  ) {
-    if (image) {
-      removeImage(image);
-    }
-    return res.status(400).json({ error: "missing required property" });
-  } else if (!image) {
-    return res.status(400).json({ error: "missing image" });
-  } else {
-    // const token = createToken(user.id);
-    const hashedPass = await bcrypt.hash(user.password, 10);
-    user.image = image;
-    try {
-      const hashedPass = await bcrypt.hash(user.password, 10);
-      const newUser = await User.create({ ...user, password: hashedPass });
-      if (user.role === "donor") {
-        const newDonor = await Donor.create();
-        const token = jwt.sign(
-          { id: newUser.id, role: "donor" },
-          process.env.TOKEN,
-          { expiresIn: "2h" }
-        );
-        newDonor.token = token;
-        await newDonor.setUser(newUser);
-        await newUser.save();
-        await newDonor.save();
-        return res.json({ user: newUser, donor: newDonor });
-      } else if (user.role === "creator") {
-        const newCreator = await Creator.create();
-        const token = jwt.sign(
-          { id: newUser.id, role: "creator" },
-          process.env.TOKEN,
-          { expiresIn: "2h" }
-        );
-        newCreator.token = token;
-        await newCreator.setUser(newUser);
-        await newUser.save();
-        await newCreator.save();
-        return res.json({ user: newUser, creator: newCreator });
-      } else {
-        const token = jwt.sign(
-          { id: newUser.id, role: "admin" },
-          process.env.TOKEN,
-          { expiresIn: "2h" }
-        );
-        user.token = token;
-        await user.save();
-        res.json({ data: newUser });
+  try {
+    if (
+      !user.firstName ||
+      !user.lastName ||
+      !user.userName ||
+      !user.password ||
+      !user.role
+    ) {
+      if (image) {
+        removeImage(image);
       }
-    } catch (error) {
-      console.log(error);
+      return res.status(400).json({ error: "missing required property" });
+    } else if (!image) {
+      return res.status(400).json({ error: "missing image" });
+    } else {
+      // const token = createToken(user.id);
+      let passExpression = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+      if (!user.password.match(passExpression)) {
+        return res.status(400).json({
+          error:
+            "password should start with letter and has 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter",
+        });
+      } else {
+        let findUser = await User.findOne({
+          where: { userName: user.userName },
+        });
+        if (findUser) {
+          removeImage(image);
+          return res.status(400).json({ error: "userName is already exist" });
+        } else {
+          const hashedPass = await bcrypt.hash(user.password, 10);
+          user.image = image;
+          try {
+            const hashedPass = await bcrypt.hash(user.password, 10);
+            const newUser = await User.create({
+              ...user,
+              password: hashedPass,
+            });
+            if (user.role === "donor") {
+              const newDonor = await Donor.create();
+              const token = jwt.sign(
+                { id: newUser.id, role: "donor" },
+                process.env.TOKEN,
+                { expiresIn: "2h" }
+              );
+              newDonor.token = token;
+              await newDonor.setUser(newUser);
+              await newUser.save();
+              await newDonor.save();
+              return res.json({ user: newUser, donor: newDonor });
+            } else if (user.role === "creator") {
+              const newCreator = await Creator.create();
+              const token = jwt.sign(
+                { id: newUser.id, role: "creator" },
+                process.env.TOKEN,
+                { expiresIn: "2h" }
+              );
+              newCreator.token = token;
+              await newCreator.setUser(newUser);
+              await newUser.save();
+              await newCreator.save();
+              return res.json({ user: newUser, creator: newCreator });
+            } else {
+              const token = jwt.sign(
+                { id: newUser.id, role: "admin" },
+                process.env.TOKEN,
+                { expiresIn: "2h" }
+              );
+              user.token = token;
+              await user.save();
+              res.json({ data: newUser });
+            }
+          } catch (error) {
+            removeImage(user.image);
+            console.log(error);
+          }
+        }
+      }
     }
+  } catch (error) {
+    removeImage(image);
+    console.log(error);
+    return res.status(400).json(error);
   }
 }
 
