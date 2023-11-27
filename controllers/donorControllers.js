@@ -17,6 +17,7 @@ export async function editDonor(req, res) {
   const { donorId, balance, amountPaid } = req.body;
 
   try {
+    
     const donor = await Donor.findOne({ where: { id: donorId } });
     donor.set({
       balance: balance || donor.balance - amountPaid,

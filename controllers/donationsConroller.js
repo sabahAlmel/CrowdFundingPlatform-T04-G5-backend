@@ -4,7 +4,7 @@ import Donor from "../models/donor.js";
 import Campaign from "../models/campaignModel.js";
 
 export async function createDonation(req, res) {
-  const { donorId, amount, campaignId } = req.body;
+  const {  amount, campaignId } = req.body;
   let donor = req.donor
 
   donor.balance = donor.balance - amount;
@@ -15,9 +15,9 @@ export async function createDonation(req, res) {
 
     const newDonation = await Donations.create({
       transferredAmount: amount,
-      DonorId: donorId,
-      CampaignId: campaignId
     });
+    await newDonation.setCampaign(campaign)
+    await newDonation.setDonor(donor)
     campaign.amountContributed += amount 
     await donor.save();
     await campaign.save()
@@ -27,7 +27,7 @@ export async function createDonation(req, res) {
 }
 export async function getDonations(req, res){
   try {
-    const data = await Donations.findAll({include: 'Donor'})
+    const data = await Donations.findAll({include: {model: req.userRole, where: {id: req.userId}}})
     res.json({data: data})
   } catch (error) {
     console.log(error)

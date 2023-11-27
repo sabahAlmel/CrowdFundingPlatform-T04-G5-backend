@@ -24,7 +24,9 @@ async function getAllUsers(req, res) {
     options =
       role === "creator"
         ? { include: Creator, where: { role: "creator" } }
-        : { include: Donor, where: { role: "donor" } };
+        : { include: Donor, where: { role: "Donor" } };
+  }else{
+    options = {}
   }
   console.log(options);
   let getAll = await User.findAll({
@@ -61,7 +63,7 @@ async function addNewUser(req, res) {
       if (user.role === "donor") {
         const newDonor = await Donor.create();
         const token = jwt.sign(
-          { id: newUser.id, role: "donor" },
+          { id: newDonor.id, role: "donor" },
           process.env.TOKEN,
           { expiresIn: "2h" }
         );
@@ -100,7 +102,7 @@ async function addNewUser(req, res) {
 
 async function updateUser(req, res) {
   const user = req.body;
-  user.id = req.params.id;
+  user.id = req.body.id;
   const newImage = req.file.path;
   const found = await User.findOne({ where: { id: user.id } });
   if (!found) {

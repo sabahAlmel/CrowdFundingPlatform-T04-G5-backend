@@ -1,6 +1,6 @@
 import express from 'express'
 import { addDonor, editDonor, readDonors } from '../controllers/donorControllers.js'
-import { paginate } from '../middlewares/donor.js'
+import { paginate } from '../middlewares/pagination.js'
 
 const donorRouter = express.Router()
 
