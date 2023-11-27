@@ -14,7 +14,7 @@ const userRouter = express.Router();
 
 userRouter.get("/", paginate, sortData, getAllUsers);
 userRouter.post("/add", upload.single("image"), addNewUser);
-userRouter.put("/update", authorize, upload.single("image"), updateUser);
-userRouter.delete("/delete", deleteUser);
+userRouter.put("/update", upload.single("image"), authorize, updateUser);
+userRouter.delete("/delete", authorize, deleteUser);
 
 export { userRouter };

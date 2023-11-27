@@ -59,10 +59,19 @@ async function addNewUser(req, res) {
     } else {
       // const token = createToken(user.id);
       let passExpression = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+      let userNameExpression = /^[A-Za-z]{5,}[0-9]{1,}$/;
       if (!user.password.match(passExpression)) {
+        removeImage(image);
         return res.status(400).json({
           error:
             "password should start with letter and has 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter",
+        });
+      }
+      if (!user.userName.match(userNameExpression)) {
+        removeImage(image);
+        return res.status(400).json({
+          error:
+            "userName should have at least one numeric digit at the end and start with a letter",
         });
       } else {
         let findUser = await User.findOne({
@@ -133,25 +142,40 @@ async function addNewUser(req, res) {
 
 async function updateUser(req, res) {
   const user = req.body;
+  let newImage;
   user.id = req.userId;
   console.log(req.userId);
-  const newImage = req.file.path;
+
   const found = await User.findOne({ where: { id: user.id } });
+  if (!req.file) {
+    newImage = found.image;
+  } else if (req.file) {
+    const oldImage = found.image;
+    newImage = req.file.path;
+    removeImage(oldImage);
+  }
   if (!found) {
     if (newImage) {
       removeImage(newImage);
     }
     return res.status(400).json({ error: "id not found" });
   }
-  const oldImage = found.image;
-  try {
-    if (oldImage !== newImage) {
-      user.image = newImage;
-      await User.update({ ...user }, { where: { id: user.id } });
-      if (oldImage) {
-        removeImage(oldImage);
-      }
+  if (user.userName) {
+    return res.status(400).json({ error: "you can't update your username" });
+  }
+  if (req.userRole !== "admin") {
+    if (user.role) {
+      return res.status(400).json({ error: "you can't change your role" });
     }
+  }
+  try {
+    user.image = newImage;
+    if (user.password) {
+      const hashedPass = await bcrypt.hash(user.password, 10);
+      user.password = hashedPass;
+    }
+    await User.update({ ...user }, { where: { id: user.id } });
+
     return res.status(200).json(user);
   } catch (err) {
     console.error("could not update user " + err);
@@ -163,7 +187,12 @@ async function updateUser(req, res) {
 }
 
 function deleteUser(req, res) {
-  let id = req.body.id;
+  let id;
+  if (req.userRole == "admin") {
+    id = req.body.id;
+  } else {
+    id = req.userId;
+  }
   User.findOne({ where: { id: id } }).then((user) => {
     if (!user) {
       return res.status(404).json({ error: "user not found" });
