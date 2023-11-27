@@ -4,29 +4,22 @@ import Campaign from "./models/campaignModel.js";
 import Donor from "./models/donor.js";
 import Donations from "./models/donations.js";
 import Category from "./models/categoryModel.js";
-import Admin from './models/adminModel.js'
+import sequelize from "./config/dbConnection.js";
+// import Category from "./models/categoryModel.js"
 
-User.hasOne(Creator);
+User.hasOne(Creator, { onDelete: "CASCADE" });
 Creator.belongsTo(User);
 Donor.belongsToMany(Campaign, { through: Donations, foreignKey: "DonorId" });
 Campaign.belongsToMany(Donor, { through: Donations, foreignKey: "CampaignId" });
 
-Category.hasMany(Campaign);
+Category.hasMany(Campaign, { onDelete: "CASCADE" });
 Campaign.belongsTo(Category);
 
-User.hasOne(Donor, { foreignKey: "UserId", onDelete: 'CASCADE' });
-Donor.belongsTo(User, { foreignKey: "UserId", onDelete: 'CASCADE' });
+Creator.hasMany(Campaign, { onDelete: "CASCADE" });
+Campaign.belongsTo(Creator);
 
-Category.hasMany(Campaign);
-Campaign.belongsTo(Category);
-
-
-
-User.hasOne(Donor, { onDelete: "CASCADE" });
-Donor.belongsTo(User, { onDelete: "CASCADE" });
-
-User.hasOne(Admin, { onDelete: "CASCADE" });
-Admin.belongsTo(User, { onDelete: "CASCADE" });
+User.hasOne(Donor, { foreignKey: "UserId", onDelete: "CASCADE" });
+Donor.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
 
 // await User.sync({alter: true})
 // await Donor.sync({alter: true})
