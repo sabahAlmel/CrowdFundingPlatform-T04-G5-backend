@@ -5,12 +5,11 @@ export async function checkBalance(req, res, next) {
   if(req.userRole !== 'donor'){
     return res.status(401).send('Not Auhtorized')
   }
-  console.log(req.userId)
   const donor = await Donor.findByPk(req.userId);
   if (req.body.amount > donor.balance){
     res.status(401).send("You don't have this amount in your account")
   }else{
-    req.donor = donor
+    req.donor = donor.dataValues
     next()
   }
 }

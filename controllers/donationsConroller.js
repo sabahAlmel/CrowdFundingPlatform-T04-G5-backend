@@ -6,6 +6,7 @@ import Campaign from "../models/campaignModel.js";
 export async function createDonation(req, res) {
   const {  amount, campaignId } = req.body;
   let donor = req.donor
+  console.log(donor)
 
   donor.balance = donor.balance - amount;
   donor.numberOfContribution = donor.numberOfContribution + 1;
@@ -27,6 +28,10 @@ export async function createDonation(req, res) {
 }
 export async function getDonations(req, res){
   try {
+    if(req.userRole === 'admin'){
+      const data = await Donations.findAll({include: Object.values(Donations.associations)})
+      return res.json({data: data})
+    }
     const data = await Donations.findAll({include: {model: req.userRole, where: {id: req.userId}}})
     res.json({data: data})
   } catch (error) {

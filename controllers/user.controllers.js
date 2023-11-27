@@ -6,6 +6,7 @@ import Creator from "../models/Creator.models.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import "dotenv/config";
+import Admin from "../models/adminModel.js";
 
 function removeImage(image) {
   fs.unlinkSync(image, (err) => {
@@ -18,19 +19,23 @@ function removeImage(image) {
 }
 
 async function getAllUsers(req, res) {
-  const role = req.query.role;
+  const role = req.body.role;
   let options;
   if (role) {
     options =
       role === "creator"
         ? { include: Creator, where: { role: "creator" } }
+        : role === "admin"
+        ? { include: Admin, where: { role: "admin" } }
         : { include: Donor, where: { role: "Donor" } };
-  }else{
-    options = {}
+  } else {
+    options = {};
   }
   console.log(options);
   let getAll = await User.findAll({
     ...options,
+    order: req.sort,
+    include: Object.values(User.associations),
     offset: req.offset,
     limit: req.limit,
   });
@@ -75,7 +80,7 @@ async function addNewUser(req, res) {
       } else if (user.role === "creator") {
         const newCreator = await Creator.create();
         const token = jwt.sign(
-          { id: newUser.id, role: "creator" },
+          { id: newCreator.id, role: "creator" },
           process.env.TOKEN,
           { expiresIn: "2h" }
         );
@@ -85,14 +90,17 @@ async function addNewUser(req, res) {
         await newCreator.save();
         return res.json({ user: newUser, creator: newCreator });
       } else {
+        const newAdmin = await Admin.create();
         const token = jwt.sign(
-          { id: newUser.id, role: "admin" },
+          { id: newAdmin.id, role: "admin" },
           process.env.TOKEN,
           { expiresIn: "2h" }
         );
-        user.token = token;
-        await user.save();
-        res.json({ data: newUser });
+        newAdmin.token = token;
+        await newAdmin.setUser(newUser);
+        await newAdmin.save();
+        await newUser.save();
+        res.json({ data: newUser, admin: newAdmin });
       }
     } catch (error) {
       console.log(error);
@@ -131,8 +139,8 @@ async function updateUser(req, res) {
 }
 
 function deleteUser(req, res) {
-  let id = req.params.id;
-  User.findByPk(id, { include: [Creator, Donor] }).then((user) => {
+  let id = req.body.id;
+  User.findOne({ where: { id: id } }).then((user) => {
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     } else {
