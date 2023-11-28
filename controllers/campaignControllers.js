@@ -1,6 +1,7 @@
 import Campaign from "../models/campaignModel.js";
 import fs from "fs";
 import Category from "../models/categoryModel.js";
+import Creator from '../models/Creator.models.js'
 import { where } from "sequelize";
 
 // Get All Campaigns
@@ -98,6 +99,7 @@ const createCampaign = async (req, res) => {
   }
 
   const image = req.file.filename;
+  const creator = await Creator.findOne({where: {id: req.roleId}})
 
   try {
     const category = await Category.findOne({ where: { name: categoryName } });
@@ -113,7 +115,7 @@ const createCampaign = async (req, res) => {
     });
 
     await newCampaign.setCategory(category);
-    await newCampaign.setCreator(req.userId);
+    await newCampaign.setCreator(creator);
 
     await newCampaign.save()
     res.status(201).json(newCampaign);

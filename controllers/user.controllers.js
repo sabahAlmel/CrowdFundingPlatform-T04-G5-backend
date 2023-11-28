@@ -41,14 +41,14 @@ async function getAllUsers(req, res) {
 
 async function addNewUser(req, res) {
   let user = req.body;
+  const role = req.body.role || 'donor'
   const image = req.file.filename;
   try {
     if (
       !user.firstName ||
       !user.lastName ||
       !user.userName ||
-      !user.password ||
-      !user.role
+      !user.password 
     ) {
       if (image) {
         removeImage(image);
@@ -88,6 +88,7 @@ async function addNewUser(req, res) {
             const newUser = await User.create({
               ...user,
               password: hashedPass,
+              role: role
             });
             if (user.role === "donor") {
               const newDonor = await Donor.create();

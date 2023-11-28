@@ -13,32 +13,35 @@ export async function createDonation(req, res) {
   donor.amountPaid = donor.amountPaid + Number(amount);
   const campaign = await Campaign.findByPk(campaignId);
   
-  if (campaign) {
-    const newDonation = await Donations.create({
-      transferredAmount: amount,
-    });
+  campaign.amountContributed += Number(amount);
 
-    campaign.amountContributed += Number(amount);
-    await donor.setCampaigns(campaign);
-    await campaign.setDonors(donor);
+  if (campaign) {
+    const existingDonation = await Donations.findOne({where : {[Op.and] : [{DonorId: req.roleId},{CampaignId: campaignId}]}})
+    if(existingDonation){
+      existingDonation.transferredAmount += Number(amount)
+      existingDonation.save()
+      return res.json({data: existingDonation})
+    }else{
+      await donor.setCampaigns(campaign, {through:{ transferredAmount: amount}});
+    }
+    
+
     await donor.save();
     await campaign.save();
-    res.json({ data: newDonation, donor: donor });
+    res.json({ donor: donor });
   }
 }
 export async function getDonations(req, res) {
   try {
-    // const creator = await Creator.findAll()
     if (req.userRole === "admin") {
       const data = await Donations.findAll({
         include: Object.values(Donations.associations),
       });
       return res.json({ data: data });
     }
-    const data = await Donations.findAll({
-      include: Object.values(Donations.associations),
-      where: {DonorID: req.roleId}
-      // where: {[Op.or] : [{ DonorId: req.roleId }, {campaignId: {[Op.in] : } }]},
+    const data = await Donor.findAll({
+      include: [{model: Campaign, through: Donations }],
+      where: {id: req.roleId}
     }); 
     res.json({ data: data });
   } catch (error) {
