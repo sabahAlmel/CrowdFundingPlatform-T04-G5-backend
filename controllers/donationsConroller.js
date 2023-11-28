@@ -48,3 +48,29 @@ export async function getDonations(req, res) {
     console.log(error);
   }
 }
+
+// newCreator1
+// createrPassword1
+
+
+export async function getDonationsByCreatorId(req, res) {
+  try {
+    const data = await Donations.findAll({
+      include: [
+        {
+          model: Campaign,
+          where: {
+            CreatorId: req.roleId,
+          },
+        },
+      ],
+    });
+    console.log(req.roleId)
+    console.log(data)
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(501).json({ message: "Internal server error" });
+  }
+}
+
