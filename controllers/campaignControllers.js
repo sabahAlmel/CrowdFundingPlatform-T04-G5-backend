@@ -1,7 +1,7 @@
 import Campaign from "../models/campaignModel.js";
 import fs from "fs";
 import Category from "../models/categoryModel.js";
-import Creator from '../models/Creator.models.js'
+import Creator from "../models/Creator.models.js";
 import { where } from "sequelize";
 
 // Get All Campaigns
@@ -22,20 +22,17 @@ const getAllCampaigns = async (req, res) => {
 
 // Get Campaigns by creator Id
 
-const getCampaignsByCreatorId = async (req,res) =>{
-  try{
+const getCampaignsByCreatorId = async (req, res) => {
+  try {
     const campaigns = await Campaign.findAll({
-      where : {CreatorId : req.userId}
-    })
-    res.status(200).json(campaigns)
+      where: { CreatorId: req.userId },
+    });
+    res.status(200).json(campaigns);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  catch(error){
-    console.log(error)
-    res.status(500).json({error:"Internal Server Error"})
-  }
-}
-
-
+};
 
 // Get a specific Campaign
 
@@ -99,11 +96,10 @@ const createCampaign = async (req, res) => {
   }
 
   const image = req.file.filename;
-  const creator = await Creator.findOne({where: {id: req.roleId}})
+  const creator = await Creator.findOne({ where: { id: req.roleId } });
 
   try {
     const category = await Category.findOne({ where: { name: categoryName } });
-  
 
     const newCampaign = await Campaign.create({
       title,
@@ -117,7 +113,7 @@ const createCampaign = async (req, res) => {
     await newCampaign.setCategory(category);
     await newCampaign.setCreator(creator);
 
-    await newCampaign.save()
+    await newCampaign.save();
     res.status(201).json(newCampaign);
     console.log(newCampaign);
   } catch (error) {
@@ -192,15 +188,12 @@ const deleteCampaign = async (req, res) => {
   }
 };
 async function getPendingCampaigns(req, res) {
-  if (req.userRole !== 'admin') {
-    return res.json({message: 'Not Authorized'})
-  }
   try {
     const data = await Campaign.findAll({
       include: Category,
       where: { status: "pending" },
     });
-    res.json({data: data})
+    res.json({ data: data });
   } catch (error) {
     console.log(error);
     res.json({ message: "Internal server error" });
@@ -215,5 +208,5 @@ export {
   updateCampaign,
   deleteCampaign,
   getPendingCampaigns,
-  getCampaignsByCreatorId
+  getCampaignsByCreatorId,
 };
