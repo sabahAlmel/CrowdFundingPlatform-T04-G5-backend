@@ -11,7 +11,7 @@ import donationRouter from "./routes/donationRoute.js";
 import cookieParser from "cookie-parser";
 import { signIn } from "./controllers/loginController.js";
 import { authorize, logOut } from "./middlewares/auth.js";
-import './models/notificationModel.js'
+import "./models/notificationModel.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -26,6 +26,7 @@ try {
   console.log("Unable to connect to database");
 }
 app.use(cookieParser());
+app.use("/public/images", express.static("public/images"));
 app.use("/users", userRouter);
 app.use("/campaigns", campaignRouter);
 app.use("/categories", categoryRouter);

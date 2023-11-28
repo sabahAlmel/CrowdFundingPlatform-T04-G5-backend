@@ -9,7 +9,7 @@ import "dotenv/config";
 import Admin from "../models/adminModel.js";
 
 function removeImage(image) {
-  fs.unlinkSync(image, (err) => {
+  fs.unlinkSync(`public/images/${image}`, (err) => {
     if (err) {
       console.log(`we can't delete the image`);
     } else {
@@ -41,7 +41,7 @@ async function getAllUsers(req, res) {
 
 async function addNewUser(req, res) {
   let user = req.body;
-  const image = req.file.path;
+  const image = req.file.filename;
   try {
     if (
       !user.firstName ||
@@ -151,7 +151,7 @@ async function updateUser(req, res) {
     newImage = found.image;
   } else if (req.file) {
     const oldImage = found.image;
-    newImage = req.file.path;
+    newImage = req.file.filename;
     removeImage(oldImage);
   }
   if (!found) {
