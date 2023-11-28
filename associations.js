@@ -44,6 +44,9 @@ Donor.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
 User.hasOne(Admin, { onDelete: "CASCADE" });
 Admin.belongsTo(User, { onDelete: "CASCADE" });
 
+Donations.belongsTo(Campaign);
+Campaign.hasMany(Donations);
+
 // await User.sync({alter: true})
 // await Admin.sync({alter: true})
 // await sequelize.sync({alter:true})

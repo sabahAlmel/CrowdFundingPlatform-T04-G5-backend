@@ -16,3 +16,5 @@ const Notification = sequelize.define('Notification', {
     }
   });
   
+
+// Notification.sync({alter:true})
