@@ -92,7 +92,7 @@ const createCampaign = async (req, res) => {
   } = req.body;
 
   if (!req.file) {
-    return res.status(400).json({ error: "Please upload an image" });
+    req.file = {filename:"campaign.png"}
   }
 
   const image = req.file.filename;
