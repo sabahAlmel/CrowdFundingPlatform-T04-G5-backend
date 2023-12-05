@@ -38,6 +38,7 @@ app.use("/categories", categoryRouter);
 app.use("/donors", donorRouter);
 app.use("/donations", donationRouter);
 app.get("/login", signIn);
+app.get("/login", signIn);
 app.get("/protected", authorize, (req, res) => {
   return res.json({ user: { id: req.userId, role: req.userRole } });
 });
