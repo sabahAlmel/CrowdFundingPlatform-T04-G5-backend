@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import Admin from "../models/adminModel.js";
+import { request } from "http";
 
 function removeImage(image) {
   fs.unlinkSync(`public/images/${image}`, (err) => {
@@ -41,15 +42,17 @@ async function getAllUsers(req, res) {
 
 async function addNewUser(req, res) {
   let user = req.body;
-  const role = req.body.role || 'donor'
-  const image = req.file.filename;
+  const role = req.body.role || "donor";
+  let image;
+  if (!req.file) {
+    req.file = { filename: "user.jpg" };
+    image = req.file.filename;
+  } else {
+    image = req.file.filename;
+  }
+
   try {
-    if (
-      !user.firstName ||
-      !user.lastName ||
-      !user.userName ||
-      !user.password 
-    ) {
+    if (!user.firstName || !user.lastName || !user.userName || !user.password) {
       if (image) {
         removeImage(image);
       }
@@ -88,7 +91,7 @@ async function addNewUser(req, res) {
             const newUser = await User.create({
               ...user,
               password: hashedPass,
-              role: role
+              role: role,
             });
             if (user.role === "donor") {
               const newDonor = await Donor.create();
