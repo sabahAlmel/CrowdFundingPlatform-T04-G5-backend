@@ -7,7 +7,7 @@ import {
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.js";
 import { paginate } from "../middlewares/pagination.js";
-import { authorize } from "../middlewares/auth.js";
+import { authorize, isAdmin } from "../middlewares/auth.js";
 import { sortData } from "../middlewares/sorting.js";
 
 const userRouter = express.Router();

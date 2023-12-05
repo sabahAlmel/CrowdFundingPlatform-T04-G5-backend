@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
-    optionsSuccessStatus: 200,
+    optionSuccessStatus: 200,
   })
 );
 app.use(urlencoded({ extended: true }));
@@ -31,14 +31,13 @@ try {
 } catch (error) {
   console.log("Unable to connect to database");
 }
-app.use(cookieParser());
 app.use("/public/images", express.static("public/images"));
 app.use("/users", userRouter);
 app.use("/campaigns", campaignRouter);
 app.use("/categories", categoryRouter);
 app.use("/donors", donorRouter);
 app.use("/donations", donationRouter);
-app.get("/login", signIn);
+app.post("/login", signIn);
 app.get("/protected", authorize, (req, res) => {
   return res.json({ user: { id: req.userId, role: req.userRole } });
 });

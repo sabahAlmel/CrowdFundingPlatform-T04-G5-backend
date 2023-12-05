@@ -7,28 +7,30 @@ import Creator from "../models/Creator.models.js";
 export async function createDonation(req, res) {
   const { amount, campaignId } = req.body;
   const donor = await Donor.findByPk(req.roleId);
-  console.log(req.body)
-  donor.balance -= Number(amount);
-  donor.numberOfContribution += 1;
-  donor.amountPaid = donor.amountPaid + Number(amount);
+  console.log(req.body);
   const campaign = await Campaign.findByPk(campaignId);
-  
-  campaign.amountContributed += Number(amount);
+  try {
+    if (campaign) {
+      const data = await Donations.create({
+        DonorId: req.roleId,
+        CampaignId: campaignId,
+        transferredAmount: amount,
+      });
+      if (data) {
+        donor.balance -= Number(amount);
+        donor.numberOfContribution += 1;
+        donor.amountPaid = donor.amountPaid + Number(amount);
+        campaign.amountContributed += Number(amount);
 
-  if (campaign) {
-    const existingDonation = await Donations.findOne({where : {[Op.and] : [{DonorId: req.roleId},{CampaignId: campaignId}]}})
-    if(existingDonation){
-      existingDonation.transferredAmount += Number(amount)
-      existingDonation.save()
-      return res.json({data: existingDonation})
+        await donor.save();
+        await campaign.save();
+        res.json({ data: data, donor: donor });
+      }
     }else{
-      await donor.setCampaigns(campaign, {through:{ transferredAmount: amount}});
+      console.log(`No Campaign found with the id ${campaignId}`)
     }
-    
-
-    await donor.save();
-    await campaign.save();
-    res.json({ donor: donor });
+  } catch (error) {
+    console.log(error);
   }
 }
 export async function getDonations(req, res) {
@@ -40,9 +42,9 @@ export async function getDonations(req, res) {
       return res.json({ data: data });
     }
     const data = await Donor.findAll({
-      include: [{model: Campaign, through: Donations }],
-      where: {id: req.roleId}
-    }); 
+      include: [{ model: Campaign, through: Donations }],
+      where: { id: req.roleId },
+    });
     res.json({ data: data });
   } catch (error) {
     console.log(error);
@@ -51,7 +53,6 @@ export async function getDonations(req, res) {
 
 // newCreator1
 // createrPassword1
-
 
 export async function getDonationsByCreatorId(req, res) {
   try {
@@ -65,12 +66,11 @@ export async function getDonationsByCreatorId(req, res) {
         },
       ],
     });
-    console.log(req.roleId)
-    console.log(data)
+    console.log(req.roleId);
+    console.log(data);
     res.json(data);
   } catch (error) {
     console.log(error);
     res.status(501).json({ message: "Internal server error" });
   }
 }
-
