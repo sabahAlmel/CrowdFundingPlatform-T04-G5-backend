@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 export function authorize(req, res, next) {
   const token = req.cookies.access_token;
+  console.log(token)
   if (!token) {
     return res.sendStatus(403);
   }

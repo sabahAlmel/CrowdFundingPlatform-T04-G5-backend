@@ -9,16 +9,9 @@ import Admin from "./models/adminModel.js";
 // import Category from "./models/categoryModel.js"
 
 // Donor and Campaign
-Donor.belongsToMany(Campaign, {
-  through: Donations,
-  foreignKey: "DonorId",
-  uniqueKey: false,
-});
-Campaign.belongsToMany(Donor, {
-  through: Donations,
-  foreignKey: "CampaignId",
-  uniqueKey: false,
-});
+Donor.hasMany(Donations);
+
+Donations.belongsTo(Donor);
 
 // Category and Campaign
 Category.hasMany(
@@ -44,13 +37,13 @@ Donor.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
 User.hasOne(Admin, { onDelete: "CASCADE" });
 Admin.belongsTo(User, { onDelete: "CASCADE" });
 
+// donations and campaigns
 Donations.belongsTo(Campaign);
 Campaign.hasMany(Donations);
 
 // await User.sync({alter: true})
 // await Admin.sync({alter: true})
 // await sequelize.sync({alter:true})
-// Campaign.sync({alter: true})
-// await sequelize.sync({alter: true})
+// await Campaign.sync({ alter: true });
+// await Donor.sync({ alter: true });
 // await Donations.sync({ alter: true });
-

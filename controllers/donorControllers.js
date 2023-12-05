@@ -31,7 +31,7 @@ export async function editDonor(req, res) {
 export async function readDonors(req, res) {
   try {
     const response = await Donor.findAll({
-      include: [Campaign, User],
+      include: [Donations, User],
       offset: req.offset,
       limit: req.limit,
     });
