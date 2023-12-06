@@ -1,13 +1,28 @@
-import express from 'express'
-import { createDonation, getDonations , getDonationsByCreatorId} from '../controllers/donationsConroller.js'
-import { checkBalance } from '../middlewares/donationsMidware.js'
-import { authorize, isDonor } from '../middlewares/auth.js';
-import { isCreator } from '../middlewares/auth.js';
+import express from "express";
+import {
+  createDonation,
+  getDonations,
+  getDonationsByCreatorId,
+} from "../controllers/donationsConroller.js";
+import { checkBalance } from "../middlewares/donationsMidware.js";
+import { authenticate } from "../middlewares/auth.js";
+import { checkRoles } from "../controllers/auth.controllers.js";
 
 const donationRouter = express.Router();
 
-donationRouter.post("/add", authorize, isDonor, checkBalance, createDonation);
-donationRouter.get("/read", authorize, getDonations);
-donationRouter.get("/read/donationsByCreator", authorize , isCreator , getDonationsByCreatorId )
+donationRouter.post(
+  "/add",
+  authenticate,
+  checkRoles(["donor"]),
+  checkBalance,
+  createDonation
+);
+donationRouter.get("/read", authenticate, getDonations);
+donationRouter.get(
+  "/read/donationsByCreator",
+  authenticate,
+  checkRoles(["creator"]),
+  getDonationsByCreatorId
+);
 
 export default donationRouter;

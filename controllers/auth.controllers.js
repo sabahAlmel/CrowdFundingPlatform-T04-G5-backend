@@ -1,22 +1,26 @@
-import User from "../models/User.models.js";
-import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
-export async function signIn(req, res) {
-  const { userName, password } = req.body;
-  const user = await User.findOne({ where: { userName: userName } });
-  if (user) {
-    const auth = await bcrypt.compare(password, user.password);
-
-    if (auth) {
-      res.json({ data: user });
-      return user;
+export async function authenticate(req, res) {
+  try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return res.status(401).send("No token");
     }
-    res.json({ message: "incorrect password" });
+    const decoded = jwt.verify(token, process.env.TOKEN);
+    res.user = decoded;
+  } catch (error) {
+    console.log(error);
   }
-  res.json({ message: "incorrect username" });
 }
-
-// function logout(req, res) {
-//   res.cookie("jwt", "", { maxAge: 1 });
-//   res.redirect("/login");
-// }
+export const checkRoles = (roles) => (req, res, next) => {
+  if (req.user && roles.includes(req.user.role)) {
+    next();
+  } else {
+    res
+      .status(403)
+      .json({
+        message: "Forbidden: You do not have the required permissions.",
+      });
+  }
+};

@@ -3,6 +3,7 @@ import Donations from "../models/donations.js";
 import Donor from "../models/donor.js";
 import Campaign from "../models/campaignModel.js";
 import Creator from "../models/Creator.models.js";
+import User from "../models/User.models.js";
 
 export async function createDonation(req, res) {
   const { amount, campaignId } = req.body;
@@ -26,8 +27,8 @@ export async function createDonation(req, res) {
         await campaign.save();
         res.json({ data: data, donor: donor });
       }
-    }else{
-      console.log(`No Campaign found with the id ${campaignId}`)
+    } else {
+      console.log(`No Campaign found with the id ${campaignId}`);
     }
   } catch (error) {
     console.log(error);
@@ -35,17 +36,22 @@ export async function createDonation(req, res) {
 }
 export async function getDonations(req, res) {
   try {
-    if (req.userRole === "admin") {
-      const data = await Donations.findAll({
-        include: Object.values(Donations.associations),
-      });
-      return res.json({ data: data });
-    }
-    const data = await Donor.findAll({
-      include: [{ model: Campaign, through: Donations }],
-      where: { id: req.roleId },
+    const data = await Donations.findAll({
+      include: [
+        {
+          model: Campaign,
+          attributes: ["title", "target"],
+          include: [
+            {
+              model: Creator,
+              include: [{ model: User, attributes: ["firstName", "lastName"] }],
+            },
+          ],
+        },
+        { model: Donor, include: User },
+      ],
     });
-    res.json({ data: data });
+    return res.json({ data: data });
   } catch (error) {
     console.log(error);
   }

@@ -16,7 +16,6 @@ export async function signIn(req, res) {
     if (!user) {
       res.status(400).json({ message: "User Not Found!" });
     } else {
-      console.log(user);
       const id =
         user.role === "creator"
           ? user.Creator.id
@@ -35,6 +34,7 @@ export async function signIn(req, res) {
           .cookie("access_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
           })
           .status(200)
           .json(user);

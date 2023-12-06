@@ -10,7 +10,7 @@ import donorRouter from "./routes/donorRoutes.js";
 import donationRouter from "./routes/donationRoute.js";
 import cookieParser from "cookie-parser";
 import { signIn } from "./controllers/loginController.js";
-import { authorize, logOut } from "./middlewares/auth.js";
+import { authenticate, logOut } from "./middlewares/auth.js";
 import "./models/notificationModel.js";
 
 const port = process.env.PORT;
@@ -37,10 +37,8 @@ app.use("/campaigns", campaignRouter);
 app.use("/categories", categoryRouter);
 app.use("/donors", donorRouter);
 app.use("/donations", donationRouter);
-app.post("/login", signIn);
-app.get("/protected", authorize, (req, res) => {
-  return res.json({ user: { id: req.userId, role: req.userRole } });
-});
+app.get("/login", signIn);
+
 app.get("/logout", logOut);
 
 app.listen(port, () => {
