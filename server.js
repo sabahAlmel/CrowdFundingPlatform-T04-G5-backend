@@ -38,8 +38,11 @@ app.use("/categories", categoryRouter);
 app.use("/donors", donorRouter);
 app.use("/donations", donationRouter);
 app.get("/login", signIn);
-
 app.get("/logout", logOut);
+app.get('/auth',authenticate, (req,res)=>{
+  console.log(req.user)
+  res.json({user: req.user})
+} )
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

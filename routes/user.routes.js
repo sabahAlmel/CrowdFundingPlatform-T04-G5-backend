@@ -4,6 +4,7 @@ import {
   addNewUser,
   updateUser,
   deleteUser,
+  getOneUser
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.js";
 import { paginate } from "../middlewares/pagination.js";
@@ -16,5 +17,6 @@ userRouter.get("/", paginate, sortData, getAllUsers);
 userRouter.post("/add", upload.single("image"), addNewUser);
 userRouter.put("/update", upload.single("image"), authenticate, updateUser);
 userRouter.delete("/delete", authenticate, deleteUser);
+userRouter.get('/readOne', authenticate, getOneUser)
 
 export { userRouter };

@@ -13,6 +13,7 @@ export async function signIn(req, res) {
       where: { userName: username },
       include: Object.values(User.associations),
     });
+    console.log(user)
     if (!user) {
       res.status(400).json({ message: "User Not Found!" });
     } else {
@@ -33,7 +34,7 @@ export async function signIn(req, res) {
         res
           .cookie("access_token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: "true",
             sameSite: "None",
           })
           .status(200)

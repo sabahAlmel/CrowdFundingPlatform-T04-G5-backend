@@ -8,7 +8,7 @@ export async function authenticate(req, res, next) {
       return res.status(401).send("No token");
     }
     const decoded = jwt.verify(token, process.env.TOKEN);
-    res.user = decoded;
+    req.user = decoded;
     next();
     console.log("authenticate");
   } catch (error) {
