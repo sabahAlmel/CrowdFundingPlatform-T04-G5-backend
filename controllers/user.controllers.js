@@ -39,7 +39,7 @@ async function getAllUsers(req, res) {
 
 async function addNewUser(req, res) {
   let user = req.body;
-  const role = req.body.role || "donor";
+  user.role = req.body.role || "donor";
   let image;
   if (!req.file) {
     req.file = { filename: "user.jpg" };
@@ -79,7 +79,7 @@ async function addNewUser(req, res) {
             const newUser = await User.create({
               ...user,
               password: hashedPass,
-              role: role,
+              role: user.role,
             });
             if (user.role === "donor") {
               const newDonor = await Donor.create();
@@ -100,7 +100,6 @@ async function addNewUser(req, res) {
               res.json({ data: newUser, admin: newAdmin });
             }
           } catch (error) {
-            removeImage(user.image);
             console.log(error);
           }
         }
@@ -183,4 +182,15 @@ function deleteUser(req, res) {
     }
   });
 }
-export { getAllUsers, addNewUser, updateUser, deleteUser };
+async function getOneUser(req, res) {
+  try {
+    const data = await User.findByPk(req.user.userId, {
+      include: Object.values(User.associations),
+    });
+    console.log(data);
+    res.json({ user: data });
+  } catch (error) {
+    console.log(error);
+  }
+}
+export { getAllUsers, addNewUser, updateUser, deleteUser, getOneUser };
