@@ -40,7 +40,7 @@ export async function getDonations(req, res) {
       include: [
         {
           model: Campaign,
-          attributes: ["title", "target"],
+          attributes: ["title", "target", "description"],
           include: [
             {
               model: Creator,
