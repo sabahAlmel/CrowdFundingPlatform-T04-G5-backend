@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "team5p2",
+    "password": "CrowdTeam5Funding",
+    "database": "crowdfundingft",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "team5p2",
+    "password": "CrowdTeam5Funding",
+    "database": "crowdfundingft",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "team5p2",
+    "password": "CrowdTeam5Funding",
+    "database": "crowdfundingft",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  }
+}
