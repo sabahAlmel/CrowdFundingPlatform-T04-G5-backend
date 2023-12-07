@@ -1,4 +1,3 @@
-import { Op, where } from "sequelize";
 import Donations from "../models/donations.js";
 import Donor from "../models/donor.js";
 import Campaign from "../models/campaignModel.js";
@@ -7,13 +6,13 @@ import User from "../models/User.models.js";
 
 export async function createDonation(req, res) {
   const { amount, campaignId } = req.body;
-  const donor = await Donor.findByPk(req.roleId);
+  const donor = await Donor.findByPk(req.user.roleId);
   console.log(req.body);
   const campaign = await Campaign.findByPk(campaignId);
   try {
     if (campaign) {
       const data = await Donations.create({
-        DonorId: req.roleId,
+        DonorId: req.user.roleId,
         CampaignId: campaignId,
         transferredAmount: amount,
       });

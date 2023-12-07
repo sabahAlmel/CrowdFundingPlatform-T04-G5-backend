@@ -3,13 +3,24 @@ import fs from "fs";
 import Category from "../models/categoryModel.js";
 import Creator from "../models/Creator.models.js";
 import { where } from "sequelize";
+import User from "../models/User.models.js";
+import Donations from "../models/donations.js";
+import Donor from "../models/donor.js";
 
 // Get All Campaigns
 
 const getAllCampaigns = async (req, res) => {
   try {
     const campaigns = await Campaign.findAll({
-      include: [Category],
+      include: [
+        Category,
+        { model: Creator, include: User },
+        {
+          model: Donations,
+          include: [{ model: Donor, include: User }],
+        },
+        { model: Creator, include: User },
+      ],
       offset: req.offset,
       limit: req.limit,
     });
@@ -92,11 +103,11 @@ const createCampaign = async (req, res) => {
   } = req.body;
 
   if (!req.file) {
-    req.file = {filename:"campaign.png"}
+    req.file = { filename: "campaign.png" };
   }
 
   const image = req.file.filename;
-  const creator = await Creator.findOne({ where: { id: req.roleId } });
+  const creator = await Creator.findOne({ where: { id: req.user.roleId } });
 
   try {
     const category = await Category.findOne({ where: { name: categoryName } });

@@ -13,7 +13,7 @@ export async function signIn(req, res) {
       where: { userName: username },
       include: Object.values(User.associations),
     });
-    console.log(user)
+    console.log(user);
     if (!user) {
       res.status(400).json({ message: "User Not Found!" });
     } else {
@@ -28,7 +28,7 @@ export async function signIn(req, res) {
         const token = jwt.sign(
           { roleId: id, role: user.role, userId: user.id },
           process.env.TOKEN,
-          { expiresIn: "2h" }
+          { expiresIn: "24h" }
         );
         user.token = token;
         res
