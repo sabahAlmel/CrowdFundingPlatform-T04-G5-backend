@@ -88,7 +88,9 @@ async function addNewUser(req, res) {
               await newDonor.save();
               return res.json({ user: newUser, donor: newDonor });
             } else if (user.role === "creator") {
+              console.log('creator')
               const newCreator = await Creator.create();
+              await newCreator.setUser(newUser);
               await newUser.save();
               await newCreator.save();
               return res.json({ user: newUser, creator: newCreator });
