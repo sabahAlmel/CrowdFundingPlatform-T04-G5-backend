@@ -5,7 +5,7 @@ import {
   readDonors,
 } from "../controllers/donorControllers.js";
 import { paginate } from "../middlewares/pagination.js";
-import { authenticate, checkRoles } from "../controllers/auth.controllers.js";
+import { authenticate, checkRoles } from "../middlewares/auth.js";
 
 const donorRouter = express.Router();
 

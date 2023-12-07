@@ -6,7 +6,7 @@ import {
 } from "../controllers/donationsConroller.js";
 import { checkBalance } from "../middlewares/donationsMidware.js";
 import { authenticate } from "../middlewares/auth.js";
-import { checkRoles } from "../controllers/auth.controllers.js";
+import { checkRoles } from "../middlewares/auth.js";
 
 const donationRouter = express.Router();
 

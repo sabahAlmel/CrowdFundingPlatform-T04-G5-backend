@@ -27,7 +27,7 @@ export async function createDonation(req, res) {
         res.json({ data: data, donor: donor });
       }
     } else {
-      console.log(`No Campaign found with the id ${campaignId}`);
+      res.json({ message: `No Campaign found with the id ${campaignId}` });
     }
   } catch (error) {
     console.log(error);

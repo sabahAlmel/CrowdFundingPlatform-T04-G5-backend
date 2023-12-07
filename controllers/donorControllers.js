@@ -14,15 +14,14 @@ export async function addDonor(req, res) {
   }
 }
 export async function editDonor(req, res) {
-  const { donorId, balance } = req.body;
-  console.log(donorId)
+  const { balance } = req.body;
   try {
-    let donor = await Donor.findByPk(donorId);
-    donor.balance += Number(balance)
+    let donor = await Donor.findByPk(req.user.roleId);
+    donor.balance += Number(balance);
     await donor.save();
     res.json({
-      message: `user with the id ${donorId} is updated `,
-      donor: donor
+      message: `user with the id ${req.user.roleId} is updated `,
+      donor: donor,
     });
   } catch (error) {
     console.log(error);

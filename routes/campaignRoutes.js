@@ -14,7 +14,7 @@ import { upload } from "../middlewares/multer.js";
 import { paginate } from "../middlewares/pagination.js";
 import { sortData } from "../middlewares/sorting.js";
 import { authenticate } from "../middlewares/auth.js";
-import { checkRoles } from "../controllers/auth.controllers.js";
+import { checkRoles } from "../middlewares/auth.js";
 
 const campaignRouter = express.Router();
 

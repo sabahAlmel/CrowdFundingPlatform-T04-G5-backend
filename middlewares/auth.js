@@ -21,3 +21,13 @@ export function logOut(req, res) {
     .status(200)
     .json({ message: "Successfully Logged Out!" });
 }
+
+export const checkRoles = (roles) => (req, res, next) => {
+  if (req.user && roles.includes(req.user.role)) {
+    next();
+  } else {
+    res.status(403).json({
+      message: "Forbidden: You do not have the required permissions.",
+    });
+  }
+};
