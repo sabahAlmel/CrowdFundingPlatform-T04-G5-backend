@@ -215,6 +215,25 @@ async function getPendingCampaigns(req, res) {
   }
 }
 
+export async function approveCampaign(req, res) {
+  const { campaignId } = req.body;
+  console.log(campaignId);
+  try {
+    const foundCampaign = await Campaign.findByPk(campaignId);
+    if (foundCampaign) {
+      foundCampaign.status = "active";
+      await foundCampaign.save();
+      return res.status(200).json({
+        message: `The campaign with the id ${campaignId} has been approved`,
+      });
+    } else {
+      res.status(404).json({ message: `Campaign Not Found!` });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   getAllCampaigns,
   createCampaign,

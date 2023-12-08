@@ -9,6 +9,7 @@ import {
   deleteCampaign,
   getPendingCampaigns,
   getCampaignsByCreatorId,
+  approveCampaign,
 } from "../controllers/campaignControllers.js";
 import { upload } from "../middlewares/multer.js";
 import { paginate } from "../middlewares/pagination.js";
@@ -18,7 +19,7 @@ import { checkRoles } from "../middlewares/auth.js";
 
 const campaignRouter = express.Router();
 
-campaignRouter.get("/",authenticate, paginate, sortData, getAllCampaigns);
+campaignRouter.get("/", authenticate, paginate, sortData, getAllCampaigns);
 campaignRouter.get("/creator", authenticate, getCampaignsByCreatorId);
 campaignRouter.get(
   "/pending",
@@ -48,6 +49,12 @@ campaignRouter.delete(
   authenticate,
   checkRoles(["admin", "creator"]),
   deleteCampaign
+);
+campaignRouter.patch(
+  "/approve",
+  authenticate,
+  checkRoles(["admin"]),
+  approveCampaign
 );
 
 export { campaignRouter };

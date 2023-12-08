@@ -88,7 +88,7 @@ async function addNewUser(req, res) {
               await newDonor.save();
               return res.json({ user: newUser, donor: newDonor });
             } else if (user.role === "creator") {
-              console.log('creator')
+              console.log("creator");
               const newCreator = await Creator.create();
               await newCreator.setUser(newUser);
               await newUser.save();
@@ -193,6 +193,22 @@ async function getOneUser(req, res) {
     res.json({ user: data });
   } catch (error) {
     console.log(error);
+  }
+}
+export async function changeRole(req, res) {
+  const { id, role } = req.body;
+  try {
+    const foundUser = await User.findByPk(id);
+    if (foundUser) {
+      foundUser.role = role;
+      await foundUser.save();
+      res.status(200).json({ message: `update the user with the id ${id}` });
+    } else {
+      res.status(404).send("User Not Found!");
+    }
+  } catch (error) {
+    res.status(400).send("internal server error");
+    return console.log(error);
   }
 }
 export { getAllUsers, addNewUser, updateUser, deleteUser, getOneUser };
