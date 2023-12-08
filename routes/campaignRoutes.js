@@ -18,7 +18,7 @@ import { checkRoles } from "../middlewares/auth.js";
 
 const campaignRouter = express.Router();
 
-campaignRouter.get("/", paginate, sortData, getAllCampaigns);
+campaignRouter.get("/",authenticate, paginate, sortData, getAllCampaigns);
 campaignRouter.get("/creator", authenticate, getCampaignsByCreatorId);
 campaignRouter.get(
   "/pending",

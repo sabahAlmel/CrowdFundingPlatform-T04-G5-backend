@@ -9,9 +9,9 @@ import Admin from "./models/adminModel.js";
 // import Category from "./models/categoryModel.js"
 
 // Donor and Campaign
-Donor.hasMany(Donations);
+Donor.hasMany(Donations, { onDelete: "CASCADE" });
 
-Donations.belongsTo(Donor);
+Donations.belongsTo(Donor, { onDelete: "CASCADE" });
 
 // Category and Campaign
 Category.hasMany(
@@ -38,8 +38,8 @@ User.hasOne(Admin, { onDelete: "CASCADE" });
 Admin.belongsTo(User, { onDelete: "CASCADE" });
 
 // donations and campaigns
-Donations.belongsTo(Campaign);
-Campaign.hasMany(Donations);
+Donations.belongsTo(Campaign, { onDelete: "CASCADE" });
+Campaign.hasMany(Donations, { onDelete: "CASCADE" });
 
 // await User.sync({alter: true})
 // await Admin.sync({alter: true})

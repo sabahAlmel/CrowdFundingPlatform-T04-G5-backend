@@ -19,7 +19,11 @@ const getAllCampaigns = async (req, res) => {
           model: Donations,
           include: [{ model: Donor, include: User }],
         },
-        { model: Creator, include: User },
+        {
+          model: Creator,
+          include: User,
+          where: req.user.role === "creator" && { id: req.user.roleId },
+        },
       ],
       offset: req.offset,
       limit: req.limit,
