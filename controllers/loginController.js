@@ -15,7 +15,7 @@ export async function signIn(req, res) {
     });
     console.log(user);
     if (!user) {
-      res.status(400).json({ message: "User Not Found!" });
+      res.status(404).json({ message: "User Not Found!" });
     } else {
       const id =
         user.role === "creator"
@@ -40,7 +40,7 @@ export async function signIn(req, res) {
           .status(200)
           .json(user);
       } else {
-        res.send("Wrong credentials");
+        res.status(403).json({ message: "Wrong credentials" });
       }
     }
   } catch (error) {
