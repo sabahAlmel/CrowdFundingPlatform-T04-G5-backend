@@ -1,7 +1,7 @@
 import sequelize from "../config/dbConnection.js";
 import { DataTypes } from "sequelize";
 
-const Notification = sequelize.define('Notification', {
+export const Notification = sequelize.define('Notification', {
     senderId: {
       type: DataTypes.INTEGER,
       allowNull: false,

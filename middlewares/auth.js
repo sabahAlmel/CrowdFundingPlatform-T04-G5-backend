@@ -10,7 +10,6 @@ export async function authenticate(req, res, next) {
     const decoded = jwt.verify(token, process.env.TOKEN);
     req.user = decoded;
     next();
-    console.log("authenticate");
   } catch (error) {
     console.log(error);
   }
