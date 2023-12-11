@@ -115,6 +115,7 @@ async function addNewUser(req, res) {
 
 async function updateUser(req, res) {
   const user = req.body;
+  
   let newImage;
   user.id = req.userId;
 
@@ -200,7 +201,28 @@ export async function changeRole(req, res) {
   try {
     const foundUser = await User.findByPk(id);
     if (foundUser) {
+      const currentRole = foundUser.role;
       foundUser.role = role;
+      if (role === "admin") {
+        const newAdmin = await Admin.create();
+        currentRole === "creator"
+          ? await foundUser.setCreator(null)
+          : await foundUser.setDonor(null);
+        await newAdmin.setUser(foundUser);
+      } else if (role === "creator") {
+        const newCreator = await Creator.create();
+        currentRole === "admin"
+          ? await foundUser.setAdmin(null)
+          : await foundUser.setDonor(null);
+        await newCreator.setUser(foundUser);
+      } else {
+        const newDonor = await Donor.create();
+        currentRole === "admin"
+          ? await foundUser.setAdmin(null)
+          : await foundUser.setCreator(null);
+        await newDonor.setUser(foundUser);
+      }
+      
       await foundUser.save();
       res.status(200).json({ message: `update the user with the id ${id}` });
     } else {
