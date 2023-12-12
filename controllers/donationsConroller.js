@@ -79,3 +79,31 @@ export async function getDonationsByCreatorId(req, res) {
     res.status(501).json({ message: "Internal server error" });
   }
 }
+
+
+export async function getDonationsByDonor(req, res) {
+  try {
+    const donorId = req.params.donorId; // Assuming the donor ID is passed as a parameter
+
+    const data = await Donations.findAll({
+      include: [
+        {
+          model: Campaign,
+          include: [
+            {
+              model: Creator,
+              include: [{ model: User, attributes: ["firstName", "lastName"] }],
+            },
+          ],
+        },
+        { model: Donor, where: { id: donorId }, include: User },
+      ],
+    });
+
+    return res.json({ data: data });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+

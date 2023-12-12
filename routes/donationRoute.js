@@ -2,7 +2,7 @@ import express from "express";
 import {
   createDonation,
   getDonations,
-  getDonationsByCreatorId,
+  getDonationsByCreatorId,getDonationsByDonor,
 } from "../controllers/donationsConroller.js";
 import { checkBalance } from "../middlewares/donationsMidware.js";
 import { authenticate } from "../middlewares/auth.js";
@@ -24,5 +24,7 @@ donationRouter.get(
   checkRoles(["creator"]),
   getDonationsByCreatorId
 );
+
+donationRouter.get("/read/ByDonor", authenticate, getDonationsByDonor);
 
 export default donationRouter;
