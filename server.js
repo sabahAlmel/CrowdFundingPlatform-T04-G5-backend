@@ -12,6 +12,9 @@ import cookieParser from "cookie-parser";
 import { signIn } from "./controllers/loginController.js";
 import { authenticate, logOut } from "./middlewares/auth.js";
 import "./models/notificationModel.js";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { Notification } from "./models/notificationModel.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -39,10 +42,28 @@ app.use("/donors", donorRouter);
 app.use("/donations", donationRouter);
 app.get("/login", signIn);
 app.get("/logout", logOut);
-app.get('/auth',authenticate, (req,res)=>{
-  console.log(req.user)
-  res.json({user: req.user})
-} )
+app.get("/auth", authenticate, (req, res) => {
+  res.json({ user: req.user });
+});
+
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+  cors: { origin: process.env.httpServer },
+});
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  socket.on("donation", (data) => {
+    socket.broadcast.emit("notify", data);
+    Notification.create({
+      senderId: data.senderId,
+      recipientId: data.recipientId,
+      message: data.message,
+    });
+  });
+});
+
+httpServer.listen(3001);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

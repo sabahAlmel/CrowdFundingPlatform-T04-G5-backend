@@ -7,7 +7,6 @@ import User from "../models/User.models.js";
 export async function createDonation(req, res) {
   const { amount, campaignId } = req.body;
   const donor = await Donor.findByPk(req.user.roleId);
-  console.log(req.body);
   const campaign = await Campaign.findByPk(campaignId);
   try {
     if (campaign) {

@@ -190,7 +190,6 @@ async function getOneUser(req, res) {
     const data = await User.findByPk(req.user.userId, {
       include: Object.values(User.associations),
     });
-    console.log(data);
     res.json({ user: data });
   } catch (error) {
     console.log(error);
