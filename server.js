@@ -54,18 +54,17 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log(socket.id);
   socket.on("donation", (data) => {
+    socket.broadcast.emit("notify", data);
     Notification.create({
       senderId: data.senderId,
       recipientId: data.recipientId,
       message: data.message,
     });
-    console.log(data);
-    socket.broadcast.emit("notify", data);
   });
 });
+
+httpServer.listen(3001);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
-httpServer.listen(3001);
