@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://crowdfunding-9mad.onrender.com",
     credentials: true,
     optionSuccessStatus: 200,
   })
