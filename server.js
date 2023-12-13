@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://crowdfunding-9mad.onrender.com",
+    origin: "https://cheery-bonbon-cfa507.netlify.app/",
     credentials: true,
     optionSuccessStatus: 200,
   })
