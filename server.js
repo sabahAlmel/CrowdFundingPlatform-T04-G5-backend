@@ -18,9 +18,9 @@ const port = process.env.PORT;
 const app = express();
 app.use(
   cors({
-   origin: [
+    origin: [
       "http://localhost:3000",
-      "https://crowdfundingplatform-t04-g5-backend.onrender.com",
+      "https://crowd-funding-platform-t04-g5-frontend.vercel.app/",
     ],
     credentials: true,
     optionSuccessStatus: 200,
