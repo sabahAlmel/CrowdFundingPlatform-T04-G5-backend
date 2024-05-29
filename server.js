@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://crowd-funding-platform-t04-g5-frontend.vercel.app/",
+      "https://crowd-funding-platform-t04-g5-frontend.vercel.app",
     ],
     credentials: true,
     optionSuccessStatus: 200,
