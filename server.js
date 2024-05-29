@@ -18,7 +18,7 @@ const port = process.env.PORT;
 const app = express();
 app.use(
   cors({
-    origin: ["https://cheery-bonbon-cfa507.netlify.app", "https://cheery-bonbon-cfa507.netlify.app/"],
+    origin: *,
     credentials: true,
     optionSuccessStatus: 200,
   })
